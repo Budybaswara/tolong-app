@@ -46,7 +46,7 @@ type ReportQueueItem = {
   user: { displayName: string };
 };
 
-const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://api.tolong-mesuji.id/v1';
+const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://dokploy.closeclaw.site/tolong-api/v1';
 
 export default function Dashboard() {
   const [analytics, setAnalytics] = useState<Analytics | null>(null);
