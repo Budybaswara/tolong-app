@@ -15,4 +15,4 @@ COPY --from=build /app/apps/api/dist apps/api/dist
 COPY --from=build /app/apps/api/prisma apps/api/prisma
 WORKDIR /app/apps/api
 EXPOSE 3001
-CMD ["sh","-c","npx prisma migrate resolve --rolled-back 0001_init || true; npx prisma migrate deploy && node dist/main.js"]
+CMD ["sh","-c","npx prisma migrate deploy && node dist/src/main.js"]
