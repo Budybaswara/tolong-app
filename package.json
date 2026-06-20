@@ -1,0 +1,15 @@
+{
+  "name": "tolong",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": ["apps/api", "apps/admin"],
+  "scripts": {
+    "dev:api": "npm --workspace apps/api run start:dev",
+    "dev:admin": "npm --workspace apps/admin run dev",
+    "build": "npm --workspaces run build",
+    "lint": "npm --workspaces run lint",
+    "prisma:generate": "npm --workspace apps/api run prisma:generate",
+    "prisma:migrate": "npm --workspace apps/api run prisma:migrate",
+    "seed": "npm --workspace apps/api run seed"
+  }
+}

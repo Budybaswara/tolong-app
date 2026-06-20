@@ -1,0 +1,1 @@
+import { Module } from '@nestjs/common'; import { CivicController } from './civic.controller'; import { CivicService } from './civic.service'; @Module({ controllers:[CivicController], providers:[CivicService] }) export class CivicModule {}

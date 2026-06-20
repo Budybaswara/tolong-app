@@ -1,0 +1,311 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SUPER_ADMIN
+  KETUA_DPD
+  OPERATOR
+  DPRD_MEMBER
+  CITIZEN
+  GUEST
+}
+
+enum ReportStatus {
+  SUBMITTED
+  VERIFIED
+  IN_PROGRESS
+  RESOLVED
+  REJECTED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+enum AssistanceStatus {
+  DRAFT
+  SUBMITTED
+  REVIEW
+  APPROVED
+  REJECTED
+  DISBURSED
+}
+
+enum JobApplicationStatus {
+  SUBMITTED
+  REVIEW
+  SHORTLISTED
+  ACCEPTED
+  REJECTED
+}
+
+enum NotificationType {
+  REPORT
+  ASSISTANCE
+  NEWS
+  JOB
+  EMERGENCY
+  SYSTEM
+}
+
+model User {
+  id                         String                  @id @default(cuid())
+  firebaseUid                String?                 @unique
+  phone                      String?                 @unique
+  email                      String?                 @unique
+  displayName                String
+  avatarUrl                  String?
+  role                       Role                    @default(CITIZEN)
+  district                   String?
+  village                    String?
+  address                    String?
+  refreshTokenHash           String?
+  fcmTokens                  FcmToken[]
+  reports                    Report[]
+  emergencies                EmergencyRequest[]
+  assistanceApplications     AssistanceApplication[]
+  jobApplications            JobApplication[]
+  membership                 MembershipCard?
+  notifications              Notification[]
+  createdAt                  DateTime                @default(now())
+  updatedAt                  DateTime                @updatedAt
+}
+
+model FcmToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  platform  String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id                  String              @id @default(cuid())
+  module              String
+  name                String
+  icon                String
+  color               String
+  reports             Report[]
+  emergencyRequests   EmergencyRequest[]
+  products            Product[]
+  articles            Article[]
+  assistancePrograms  AssistanceProgram[]
+}
+
+model MediaAsset {
+  id               String          @id @default(cuid())
+  url              String
+  path             String
+  type             MediaType
+  mimeType         String
+  sizeBytes        Int
+  reportId         String?
+  report           Report?         @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  productId        String?
+  product          Product?        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  articleId        String?
+  article          Article?        @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  jobApplicationId String?
+  jobApplication   JobApplication? @relation(fields: [jobApplicationId], references: [id], onDelete: Cascade)
+  createdAt        DateTime        @default(now())
+}
+
+model Report {
+  id          String           @id @default(cuid())
+  code        String           @unique
+  title       String
+  description String
+  status      ReportStatus     @default(SUBMITTED)
+  priority    Priority         @default(MEDIUM)
+  latitude    Decimal?         @db.Decimal(10, 7)
+  longitude   Decimal?         @db.Decimal(10, 7)
+  address     String?
+  district    String
+  village     String?
+  userId      String
+  user        User             @relation(fields: [userId], references: [id])
+  categoryId  String
+  category    Category         @relation(fields: [categoryId], references: [id])
+  media       MediaAsset[]
+  timeline    ReportTimeline[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model ReportTimeline {
+  id        String       @id @default(cuid())
+  status    ReportStatus
+  note      String
+  reportId  String
+  report    Report       @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  actorId   String?
+  createdAt DateTime     @default(now())
+}
+
+model EmergencyRequest {
+  id         String       @id @default(cuid())
+  code       String       @unique
+  latitude   Decimal      @db.Decimal(10, 7)
+  longitude  Decimal      @db.Decimal(10, 7)
+  address    String?
+  status     ReportStatus @default(SUBMITTED)
+  categoryId String
+  category   Category     @relation(fields: [categoryId], references: [id])
+  userId     String?
+  user       User?        @relation(fields: [userId], references: [id])
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+}
+
+model AssistanceProgram {
+  id           String                  @id @default(cuid())
+  title        String
+  description  String
+  requirements String[]
+  quota        Int
+  isOpen       Boolean                 @default(true)
+  categoryId   String
+  category     Category                @relation(fields: [categoryId], references: [id])
+  applications AssistanceApplication[]
+  createdAt    DateTime                @default(now())
+  updatedAt    DateTime                @updatedAt
+}
+
+model AssistanceApplication {
+  id        String           @id @default(cuid())
+  status    AssistanceStatus @default(SUBMITTED)
+  payload   Json
+  programId String
+  program   AssistanceProgram @relation(fields: [programId], references: [id])
+  userId    String
+  user      User              @relation(fields: [userId], references: [id])
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model Product {
+  id          String       @id @default(cuid())
+  name        String
+  description String
+  price       Int
+  whatsapp    String
+  sellerName  String
+  district    String
+  categoryId  String
+  category    Category     @relation(fields: [categoryId], references: [id])
+  media       MediaAsset[]
+  isPublished Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model JobPosting {
+  id          String           @id @default(cuid())
+  title       String
+  company     String
+  description String
+  location    String
+  salaryMin   Int?
+  salaryMax   Int?
+  type        String
+  isPublished Boolean          @default(true)
+  applications JobApplication[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+}
+
+model JobApplication {
+  id          String               @id @default(cuid())
+  status      JobApplicationStatus @default(SUBMITTED)
+  coverLetter String?
+  cvAssets    MediaAsset[]
+  jobId       String
+  job         JobPosting           @relation(fields: [jobId], references: [id])
+  userId      String
+  user        User                 @relation(fields: [userId], references: [id])
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+}
+
+model Article {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  title       String
+  excerpt     String
+  content     String
+  featured    Boolean      @default(false)
+  publishedAt DateTime?
+  categoryId  String
+  category    Category     @relation(fields: [categoryId], references: [id])
+  authorId    String?
+  media       MediaAsset[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Banner {
+  id        String   @id @default(cuid())
+  title     String
+  subtitle  String
+  imageUrl  String
+  ctaLabel  String
+  ctaUrl    String
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model MembershipCard {
+  id         String    @id @default(cuid())
+  memberNo   String    @unique
+  qrPayload  String
+  verifiedAt DateTime?
+  userId     String    @unique
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime  @default(now())
+}
+
+model AiConversation {
+  id        String      @id @default(cuid())
+  userId    String?
+  messages  AiMessage[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model AiMessage {
+  id             String         @id @default(cuid())
+  role           String
+  content        String
+  model          String?
+  conversationId String
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime       @default(now())
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  title     String
+  body      String
+  readAt    DateTime?
+  userId    String?
+  user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+}

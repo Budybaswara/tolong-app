@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Admin Dashboard - Mesuji Bergerak</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#5f3f3b",
+                        "on-secondary-container": "#616363",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#f8f7ff",
+                        "outline-variant": "#e9bcb6",
+                        "surface-variant": "#d8e3fb",
+                        "surface-dim": "#cfdaf2",
+                        "inverse-surface": "#263143",
+                        "on-tertiary-fixed": "#00174b",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary": "#004ed0",
+                        "on-background": "#111c2d",
+                        "background": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fff7f6",
+                        "on-secondary-fixed-variant": "#454747",
+                        "secondary-fixed": "#e2e2e2",
+                        "outline": "#946e69",
+                        "secondary": "#5d5f5f",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#ffb4aa",
+                        "secondary-container": "#dfe0e0",
+                        "tertiary-container": "#2d68f0",
+                        "surface-container-high": "#dee8ff",
+                        "on-surface": "#111c2d",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "primary": "#b7000c",
+                        "on-primary-fixed": "#410001",
+                        "primary-container": "#e60012",
+                        "surface-tint": "#c0000d",
+                        "surface-container-highest": "#d8e3fb",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#930007",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary-fixed": "#ffdad5",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-container-low": "#f0f3ff",
+                        "surface-container": "#e7eeff",
+                        "surface": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "sm": "12px",
+                        "container-margin": "20px",
+                        "3xl": "64px",
+                        "xs": "8px",
+                        "md": "16px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "2xl": "48px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "title-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #F8FAFC;
+        }
+        .scroll-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .chart-bar {
+            transition: height 1s ease-in-out;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-body-md text-on-surface antialiased">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-lg border-b border-white/20 shadow-sm flex justify-between items-center px-container-margin py-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a high-ranking government official with a friendly expression. The lighting is soft and studio-quality against a clean, light gray background. He is wearing a formal Indonesian batik shirt. The overall aesthetic is trustworthy, authoritative, and modern civic-tech oriented." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_UEgtFKy1vFTP3vVEbDAQvOBNZNoHM0Kq4CK1PUeo_l84Hf0Kkr10PUMcgtNTLW6Za5R26TZ4_26K9r6Cd1SHCf4oTV3coGUVbCQzhVyrf3yTVriJz1iTP4_vWV7mZoYTGihM56VBjOOTY8nNimi3NVTjsICQzfak5Nhk819celwgDLUf0niwNg1Ujr21c7R6DVDq-dw8scrw2koavFaqLGzU8O3AZgW7HsoRSnrOEU3yAaYfE17257Oi-2GtDkZUx4Tisw20AeQ"/>
+</div>
+<div>
+<h1 class="font-title-md text-title-md text-on-surface leading-tight">Admin</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Mesuji Bergerak</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high/50 transition-all duration-300 active:scale-95 relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high/50 transition-all duration-300 active:scale-95">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+</button>
+</div>
+</header>
+<main class="pt-24 pb-32 px-container-margin space-y-lg">
+<!-- Welcome Hero -->
+<section class="mb-4">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary tracking-tight">Executive Summary</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Data real-time Kabupaten Mesuji hari ini.</p>
+</section>
+<!-- Statistics Grid: Bento Style -->
+<section class="grid grid-cols-2 gap-sm">
+<div class="glass-card col-span-2 p-md rounded-xl flex items-center justify-between overflow-hidden relative">
+<div class="z-10">
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Total Reports</p>
+<div class="flex items-baseline gap-2">
+<span class="font-display-lg text-display-lg text-primary">5,432</span>
+<div class="flex items-center text-green-600 font-label-md text-label-md">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>12%</span>
+</div>
+</div>
+</div>
+<div class="opacity-20 absolute -right-4 -bottom-4">
+<span class="material-symbols-outlined text-[100px] text-primary">assignment</span>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary text-[20px]">group</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">Active Users</p>
+<p class="font-title-md text-title-md text-on-surface font-bold">12,890</p>
+</div>
+<div class="glass-card p-md rounded-xl">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary text-[20px]">smart_toy</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant mb-1">AI Queries</p>
+<p class="font-title-md text-title-md text-on-surface font-bold">25k+</p>
+</div>
+</section>
+<!-- Charts Section -->
+<section class="space-y-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface">Analytics</h3>
+<button class="text-primary font-label-md text-label-md flex items-center gap-1">
+                    Details <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+<!-- Bar Chart: Reports by District -->
+<div class="glass-card p-lg rounded-xl">
+<h4 class="font-label-md text-label-md text-on-surface-variant mb-6 uppercase tracking-wider">Reports by District</h4>
+<div class="flex items-end justify-between h-32 gap-2">
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-primary/20 rounded-t-sm chart-bar relative group" style="height: 60%;">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">1.2k</div>
+</div>
+<span class="text-[9px] font-label-sm text-center line-clamp-1">Mesuji</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-primary-container rounded-t-sm chart-bar relative group" style="height: 90%;">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">2.1k</div>
+</div>
+<span class="text-[9px] font-label-sm text-center line-clamp-1">Mesuji T.</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-primary/20 rounded-t-sm chart-bar relative group" style="height: 45%;">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">0.8k</div>
+</div>
+<span class="text-[9px] font-label-sm text-center line-clamp-1">Way S.</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-primary/20 rounded-t-sm chart-bar relative group" style="height: 75%;">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">1.5k</div>
+</div>
+<span class="text-[9px] font-label-sm text-center line-clamp-1">Panca J.</span>
+</div>
+<div class="flex flex-col items-center flex-1 gap-2">
+<div class="w-full bg-primary/20 rounded-t-sm chart-bar relative group" style="height: 30%;">
+<div class="absolute -top-6 left-1/2 -translate-x-1/2 bg-on-surface text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity">0.4k</div>
+</div>
+<span class="text-[9px] font-label-sm text-center line-clamp-1">Simpang P.</span>
+</div>
+</div>
+</div>
+<!-- Line Chart: Monthly Activity -->
+<div class="glass-card p-lg rounded-xl overflow-hidden">
+<h4 class="font-label-md text-label-md text-on-surface-variant mb-4 uppercase tracking-wider">Monthly Activity</h4>
+<div class="relative h-24 w-full">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 100 40">
+<defs>
+<lineargradient id="line-grad" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#b7000c" stop-opacity="0.2"></stop>
+<stop offset="100%" stop-color="#b7000c" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<path d="M0,35 Q10,30 20,32 T40,25 T60,20 T80,28 T100,15 L100,40 L0,40 Z" fill="url(#line-grad)"></path>
+<path d="M0,35 Q10,30 20,32 T40,25 T60,20 T80,28 T100,15" fill="none" stroke="#b7000c" stroke-width="1"></path>
+<circle cx="100" cy="15" fill="#b7000c" r="1.5"></circle>
+</svg>
+<div class="flex justify-between mt-2 text-[10px] font-label-sm text-on-surface-variant">
+<span>Jan</span>
+<span>Mar</span>
+<span>May</span>
+<span>Jul</span>
+<span>Sep</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Notifications Center -->
+<section class="space-y-sm">
+<h3 class="font-title-md text-title-md text-on-surface">System Alerts</h3>
+<div class="space-y-2">
+<div class="glass-card p-md rounded-xl flex gap-4 border-l-4 border-primary">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary">priority_high</span>
+</div>
+<div>
+<h5 class="font-label-md text-label-md font-bold text-on-surface">New High-Priority Report</h5>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Infrastruktur jalan rusak berat di Desa Mulya Agung.</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant/60 mt-1">2 minutes ago</p>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl flex gap-4 border-l-4 border-tertiary">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-tertiary">update</span>
+</div>
+<div>
+<h5 class="font-label-md text-label-md font-bold text-on-surface">Server Maintenance</h5>
+<p class="font-body-md text-body-md text-on-surface-variant">Sistem AI Aspirasi akan offline selama 15 menit malam ini.</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant/60 mt-1">1 hour ago</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Recent Activity List -->
+<section class="space-y-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface">Recent Reports</h3>
+<button class="font-label-md text-label-md text-primary">View All</button>
+</div>
+<div class="bg-white rounded-xl shadow-sm overflow-hidden border border-slate-100">
+<div class="p-md flex items-center gap-4 border-b border-slate-50">
+<div class="w-12 h-12 rounded-lg bg-slate-100 shrink-0">
+<img class="w-full h-full object-cover rounded-lg" data-alt="A high-resolution photograph of a damaged public road in a rural Indonesian village. The road has large potholes and cracks. The lighting is bright daylight, showing the texture of the asphalt and dirt. The shot is taken from a low angle to emphasize the severity of the damage. Professional documentary style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnbr33z6329bvve3pO0FbkGcf9Wpo6Pcs0fO3nJImrZ05ttMC7rG_UfSvLYFIKPkG65mxazRVcmYnQQrI0gDXuxQupQh5mN77hUIG7auEDQsB1u_Jb-gbKhByoKJoS7d5zJww0EMPaM2HAehKQ6BbrOfCx4v1x2Tusxcsc7qHrElfPM0_gWzGy8o7r-yBb1PCoaL3kK1SUGtoN77b_OwX2BOg5E1gBwQcmY1wGml2Wa6piWoIsQUtzjuhwCU0V9ANb5GnjBKPBg9A"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-md text-label-md font-bold text-on-surface truncate">Perbaikan Jalan Lingkungan</span>
+<span class="shrink-0 px-2 py-0.5 rounded-full bg-orange-100 text-orange-700 text-[10px] font-bold uppercase">Pending</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Pelapor: Budi Santoso • 10:45 AM</p>
+</div>
+</div>
+<div class="p-md flex items-center gap-4 border-b border-slate-50">
+<div class="w-12 h-12 rounded-lg bg-slate-100 shrink-0">
+<img class="w-full h-full object-cover rounded-lg" data-alt="A clean and modern public service building in Mesuji, Indonesia. The building has contemporary architecture with glass windows and a prominent entrance. The scene is bright and sunny with a clear blue sky. The image reflects progress, transparency, and high-quality public infrastructure. Architectural photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCpDVFHu-pOuFOLu8kuhUvTFS4HKJZ5A4SispDb10u-x95KxDrOkA4_-B9zalStPvm2qExIp0jGh4q8_S90g2UqWoPlOfu55N7xrXfX9-qq4fb5TyxEXCMrRhRJJHdbZJUnihjgNypNR7Wo43Wjak1DdeWOKv6sUlH4wtgFMUWZ_-HF8vrNBPzeaehLUJOjKcqNNkAjpag-14872uyadCDQtaFis3O0B6RjppEJdX9Fab1KcitDjteMVxz2WpgVFObqvT-xC0gRHiY"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-md text-label-md font-bold text-on-surface truncate">Pengajuan Izin UMKM</span>
+<span class="shrink-0 px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase">Approved</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Pelapor: Siti Aminah • 09:12 AM</p>
+</div>
+</div>
+<div class="p-md flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-slate-100 shrink-0">
+<img class="w-full h-full object-cover rounded-lg" data-alt="An atmospheric night shot of street lighting being repaired in a residential area of Mesuji. A technician in high-visibility gear is working on a pole. The glowing street lights create a warm, safe atmosphere against the dark blue night sky. The style is urban and cinematic, focusing on maintenance and public safety." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNNUoNCn-IOwYoVEzRCbdkoAgJdlSiyEi-zbIslVGz3I6DVN3YXRBCVU7tWY0BGcRk3oe-IJEAqlT7-TjPBD_Ck5zl3yQ0hmv-Ge6VqvuV_MBMQuGafwWxTfbT-3VuZUQjP1SxMB98n31wwSiJzjEFUCgOnLz7Wh4Nw8SjKu8121Fe9m6uCYAE28pHSZkjRbhgnJPWmF49W57ilAtEBhc-6r4Gz1jKCo7SkA0eQPZd0FbPv26Vhhx0PHRH3cpnMriGL2_W8IxX7hc"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-md text-label-md font-bold text-on-surface truncate">Lampu Jalan Mati</span>
+<span class="shrink-0 px-2 py-0.5 rounded-full bg-green-100 text-green-700 text-[10px] font-bold uppercase">Approved</span>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant line-clamp-1">Pelapor: Ahmad Rifai • Yesterday</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface/85 backdrop-blur-xl border-t border-white/30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl flex justify-around items-center h-20 px-4 pb-safe">
+<button class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:mt-1 transition-transform duration-200 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-container opacity-70 hover:text-primary transition-transform duration-200 active:scale-90">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-label-md text-label-md">Aspirasi</span>
+</button>
+<button class="w-14 h-14 bg-primary-container rounded-full flex items-center justify-center text-white -mt-10 shadow-lg active:scale-90 transition-transform">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1; font-size: 32px;">smart_toy</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-container opacity-70 hover:text-primary transition-transform duration-200 active:scale-90">
+<span class="material-symbols-outlined">newspaper</span>
+<span class="font-label-md text-label-md">News</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-container opacity-70 hover:text-primary transition-transform duration-200 active:scale-90">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+<script>
+        // Micro-interaction for bar charts
+        document.addEventListener('DOMContentLoaded', () => {
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach(bar => {
+                const height = bar.style.height;
+                bar.style.height = '0';
+                setTimeout(() => {
+                    bar.style.height = height;
+                }, 300);
+            });
+        });
+    </script>
+</body></html>

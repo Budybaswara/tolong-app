@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Mesuji Bergerak - AI Assistant &amp; Program Bantuan</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#5f3f3b",
+                        "on-secondary-container": "#616363",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#f8f7ff",
+                        "outline-variant": "#e9bcb6",
+                        "surface-variant": "#d8e3fb",
+                        "surface-dim": "#cfdaf2",
+                        "inverse-surface": "#263143",
+                        "on-tertiary-fixed": "#00174b",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary": "#004ed0",
+                        "on-background": "#111c2d",
+                        "background": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fff7f6",
+                        "on-secondary-fixed-variant": "#454747",
+                        "secondary-fixed": "#e2e2e2",
+                        "outline": "#946e69",
+                        "secondary": "#5d5f5f",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#ffb4aa",
+                        "secondary-container": "#dfe0e0",
+                        "tertiary-container": "#2d68f0",
+                        "surface-container-high": "#dee8ff",
+                        "on-surface": "#111c2d",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "primary": "#b7000c",
+                        "on-primary-fixed": "#410001",
+                        "primary-container": "#e60012",
+                        "surface-tint": "#c0000d",
+                        "surface-container-highest": "#d8e3fb",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#930007",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary-fixed": "#ffdad5",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-container-low": "#f0f3ff",
+                        "surface-container": "#e7eeff",
+                        "surface": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "sm": "12px",
+                        "container-margin": "20px",
+                        "3xl": "64px",
+                        "xs": "8px",
+                        "md": "16px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "2xl": "48px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "title-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .active-dot::after {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: #b7000c;
+            border-radius: 50%;
+            margin-top: 4px;
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.95); }
+        }
+        .animate-pulse-soft { animation: pulse-soft 2s infinite ease-in-out; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-24">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-lg border-b border-white/20 shadow-sm flex justify-between items-center px-container-margin py-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional and friendly portrait of a young Indonesian citizen in a clean, modern setting. The person has a warm smile and is wearing smart-casual attire. The background is a soft, blurred modern office space with plenty of natural light and subtle red accents, reflecting a high-end civic-tech atmosphere." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5v0oOZkzGH9RA-ke4JDbYggPvaCVWlvSVU2fq7L8w6ZyW76NZr9fFCWWBnk-RibU7W1NGf_40jSimVcEgS4_fceAf30GwfvUM0gPZPCj8K2KgwkqJmRPQq4SYejhAwZufpBz4I24tJfpjse3fgs_UMaSBHCpQnwdjwXGZha9j5S9WLNwnGYjJPtmzCoP3IAO2BvQUQNrsMU5TDOriPCnxXSZOWQivlXUNj-A56JyLpIV5o2hlZJY20SelhM8XUAWgKgaeXQI-duE"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Mesuji Bergerak</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high/50 transition-all active:scale-95">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-container-margin space-y-8">
+<!-- SECTION 7: AI Assistant -->
+<section class="space-y-4" id="ai-assistant">
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-title-md text-title-md text-on-surface">AI TOLONG Assistant</h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+</span>
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Smart Active</span>
+</div>
+</div>
+<button class="text-primary font-label-md hover:underline">Riwayat Chat</button>
+</div>
+<!-- Chat Interface -->
+<div class="glass-card rounded-2xl h-[400px] flex flex-col shadow-sm overflow-hidden border border-outline-variant/30">
+<div class="flex-1 overflow-y-auto p-md space-y-4 hide-scrollbar">
+<!-- AI Message -->
+<div class="flex gap-3 max-w-[85%]">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white text-[18px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-tr-xl rounded-b-xl">
+<p class="text-body-md text-on-surface">Halo! Saya AI TOLONG. Ada yang bisa saya bantu terkait layanan publik di Kabupaten Mesuji hari ini?</p>
+<span class="text-[10px] text-secondary mt-1 block">09:41 AM</span>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-3 max-w-[85%] ml-auto flex-row-reverse">
+<div class="w-8 h-8 rounded-lg bg-secondary-container flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-secondary text-[18px]">person</span>
+</div>
+<div class="bg-primary text-white p-3 rounded-tl-xl rounded-b-xl shadow-md shadow-primary/20">
+<p class="text-body-md">Bagaimana cara mendaftar UMKM Mesuji?</p>
+<span class="text-[10px] text-white/70 mt-1 block text-right">09:42 AM</span>
+</div>
+</div>
+<!-- AI Message with Links -->
+<div class="flex gap-3 max-w-[85%]">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-white text-[18px]" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<div class="bg-surface-container-low p-3 rounded-tr-xl rounded-b-xl">
+<p class="text-body-md text-on-surface">Untuk mendaftar UMKM, Anda bisa menyiapkan KTP dan NIB. Silakan cek menu <span class="font-bold text-primary">Layanan Publik</span> atau saya bisa bantu sambungkan ke petugas terkait.</p>
+<div class="mt-3 space-y-2">
+<button class="w-full py-2 bg-white border border-outline-variant rounded-lg text-label-md text-primary flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[16px]">description</span> Lihat Persyaratan
+                                </button>
+</div>
+<span class="text-[10px] text-secondary mt-1 block">09:42 AM</span>
+</div>
+</div>
+</div>
+<!-- Suggestion Chips -->
+<div class="px-md py-2 flex gap-2 overflow-x-auto hide-scrollbar bg-white/50 border-t border-outline-variant/10">
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-outline-variant bg-white text-label-sm text-on-surface-variant hover:border-primary transition-colors">Bagaimana cara lapor jalan rusak?</button>
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-outline-variant bg-white text-label-sm text-on-surface-variant hover:border-primary transition-colors">Bantuan UMKM apa yang tersedia?</button>
+<button class="whitespace-nowrap px-3 py-1.5 rounded-full border border-outline-variant bg-white text-label-sm text-on-surface-variant hover:border-primary transition-colors">Update berita Mesuji hari ini</button>
+</div>
+<!-- Chat Input -->
+<div class="p-md bg-white border-t border-outline-variant/20 flex gap-2 items-center">
+<button class="w-10 h-10 flex-shrink-0 rounded-full bg-surface-container-high flex items-center justify-center text-secondary hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined">mic</span>
+</button>
+<div class="flex-1 bg-surface-container-low rounded-full px-4 flex items-center border border-transparent focus-within:border-primary transition-all">
+<input class="bg-transparent border-none focus:ring-0 w-full py-2.5 text-body-md text-on-surface placeholder:text-secondary" placeholder="Tulis pesan Anda..." type="text"/>
+<button class="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white active:scale-90 transition-transform">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 8: Program Bantuan -->
+<section class="space-y-6" id="program-bantuan">
+<div class="flex justify-between items-center">
+<h2 class="font-title-md text-title-md text-on-surface">Program Bantuan</h2>
+<button class="text-secondary flex items-center gap-1 font-label-md">
+                    Filter <span class="material-symbols-outlined text-[18px]">filter_list</span>
+</button>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-2 overflow-x-auto hide-scrollbar -mx-container-margin px-container-margin">
+<button class="px-5 py-2 rounded-full bg-primary text-white text-label-md font-bold shadow-md shadow-primary/20">Semua</button>
+<button class="px-5 py-2 rounded-full bg-white border border-outline-variant text-on-surface-variant text-label-md font-medium hover:border-primary transition-colors">UMKM</button>
+<button class="px-5 py-2 rounded-full bg-white border border-outline-variant text-on-surface-variant text-label-md font-medium hover:border-primary transition-colors">Pendidikan</button>
+<button class="px-5 py-2 rounded-full bg-white border border-outline-variant text-on-surface-variant text-label-md font-medium hover:border-primary transition-colors">Sosial</button>
+<button class="px-5 py-2 rounded-full bg-white border border-outline-variant text-on-surface-variant text-label-md font-medium hover:border-primary transition-colors">Pertanian</button>
+</div>
+<!-- Assistance Cards Bento Grid-ish -->
+<div class="grid grid-cols-1 gap-4">
+<!-- Card 1: Beasiswa -->
+<div class="glass-card rounded-2xl p-md flex gap-4 shadow-sm border-l-4 border-l-blue-500 group">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A cinematic, high-quality photograph of young Indonesian students in graduation gowns smiling brightly in a sunny university campus setting. The lighting is warm and optimistic, featuring a clean modern light-mode palette. The composition is dynamic and professional, reflecting hope and academic empowerment for the youth of Mesuji." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACCEXGSqaOxLhtA_Sw2B9-QyYpfZ32-rHHfLMK_PZtXYcx7bm0nUqmrqCYekMOSJVOIxIGpISbwyO35bujjE8WDl9zygnKYKswoITX5hvm3ZocOC9PLs6yePiCaBcVir7mEwe-O_xw7nvVj1RU43aZRryYf9rqH9kRPIj8QP0YS31cOJEmtFFWsRoxntm_bZB5S1-EdrZ8YKgZaRBGOF6TZmGzdLKttf62pjZkgdgCSZaKnI0z0-Pb2_wtCR_b7zFzuzyiRtzGLXQ"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full uppercase tracking-widest">Pendidikan</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">bookmark</span>
+</div>
+<h3 class="font-bold text-on-surface mt-1 group-hover:text-primary transition-colors">Beasiswa Mesuji Pintar</h3>
+<p class="text-label-sm text-secondary line-clamp-1 mt-1">Bantuan pendidikan untuk putra-putri berprestasi di Mesuji.</p>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-green-500" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-label-sm text-green-600">Pendaftaran Buka</span>
+</div>
+<button class="bg-primary text-white text-label-md px-4 py-1.5 rounded-lg font-bold shadow-sm active:scale-95 transition-all">Cek Status</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Pupuk -->
+<div class="glass-card rounded-2xl p-md flex gap-4 shadow-sm border-l-4 border-l-green-500 group">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A lush, green aerial view of vibrant rice paddies in rural Indonesia during the golden hour. The sunlight reflects off the water, creating a serene and prosperous atmosphere. The style is crisp and professional, using natural greens and warm sunset tones to evoke a sense of agricultural growth and community progress." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCls6UHcK2i1fa3-_FUFx6AdD4DO0j09_qv7qj7TQKHwAwUpjY49rOp3bk4KnLDZlfxVZjCJANItYE9ILmrx1FnRJ_5Ox8hlCuxwHTZ0v0FWuRJ53XagI6z6IWsNWD94UfLJ9FljSXupFjFt-oesezSkcXWnqOTgbriUQT_bvY0LIGFtrJjN4g9VAWsAevPEGzrkqkEnxNlTA3-UXk1qbMz7r_-yULqU5lVmnHsm6bjDerwee-bfs1JxB3_boZrl3tjsz-GgV9wpC0"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full uppercase tracking-widest">Pertanian</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">bookmark</span>
+</div>
+<h3 class="font-bold text-on-surface mt-1 group-hover:text-primary transition-colors">Subsidi Pupuk Petani</h3>
+<p class="text-label-sm text-secondary line-clamp-1 mt-1">Distribusi pupuk subsidi tepat sasaran untuk kelompok tani.</p>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-green-500" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="text-label-sm text-green-600">Terverifikasi</span>
+</div>
+<button class="bg-primary text-white text-label-md px-4 py-1.5 rounded-lg font-bold shadow-sm active:scale-95 transition-all">Cek Status</button>
+</div>
+</div>
+</div>
+<!-- Card 3: Modal UMKM -->
+<div class="glass-card rounded-2xl p-md flex gap-4 shadow-sm border-l-4 border-l-orange-500 group">
+<div class="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A vibrant and detailed close-up of traditional Indonesian handicrafts being made by skilled artisans. The scene is bright and colorful, highlighting textures of woven fabrics and wood. The lighting is soft and studio-like, maintaining a high-end civic-tech aesthetic with a focus on local economic empowerment and cultural pride." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa2P60sacxmutsA_a6OJb1WJ0POt-FEsHoiNJdgTZtDPOMT_og6nY8dDudaKLdazx4BDMN2p4WGiElg2V_TL9ifzf2Er0TP8cDMQv_vom1LjbM5_FEV3INjjYMsPYjOPfPaiIgqYTYgXoDLbvSLXhNv1i-ragszZvaHAAu8Y-MBorEDB3pAYN2kSu95TpAooMyoX5xXDL4tzDCs5euJc2UBprxFrLlTTnXRI_eix3Xj_yF--3snFSEhEPXXM7YO6j7u2hQ8WV7Ygc"/>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<span class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-full uppercase tracking-widest">UMKM</span>
+<span class="material-symbols-outlined text-secondary text-[18px]">bookmark</span>
+</div>
+<h3 class="font-bold text-on-surface mt-1 group-hover:text-primary transition-colors">Bantuan Modal UMKM</h3>
+<p class="text-label-sm text-secondary line-clamp-1 mt-1">Pendanaan modal kerja untuk pengusaha mikro lokal.</p>
+<div class="flex items-center justify-between mt-4">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-orange-500">pending</span>
+<span class="text-label-sm text-orange-600">Dalam Review</span>
+</div>
+<button class="bg-primary text-white text-label-md px-4 py-1.5 rounded-lg font-bold shadow-sm active:scale-95 transition-all">Cek Status</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/85 backdrop-blur-xl border-t border-white/30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center h-20 px-4 pb-safe">
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 transition-transform active:scale-90">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 transition-transform active:scale-90">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-label-md text-label-md mt-1">Aspirasi</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary font-bold transition-transform active:scale-90 after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:mt-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+<span class="font-label-md text-label-md mt-1">AI</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 transition-transform active:scale-90">
+<span class="material-symbols-outlined">newspaper</span>
+<span class="font-label-md text-label-md mt-1">News</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 transition-transform active:scale-90">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</button>
+</nav>
+<!-- Floating Emergency SOS Button -->
+<button class="fixed bottom-24 right-container-margin w-14 h-14 bg-primary text-white rounded-full shadow-lg shadow-primary/40 flex items-center justify-center animate-pulse-soft z-40 transition-transform active:scale-90">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">emergency</span>
+</button>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Tactical feedback simulation
+                if (window.navigator && window.navigator.vibrate) {
+                    window.navigator.vibrate(5);
+                }
+            });
+        });
+
+        // Chat scroll to bottom helper
+        const chatContainer = document.querySelector('.overflow-y-auto');
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    </script>
+</body></html>

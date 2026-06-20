@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Mesuji Bergerak - Marketplace &amp; Loker</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#5f3f3b",
+                        "on-secondary-container": "#616363",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#f8f7ff",
+                        "outline-variant": "#e9bcb6",
+                        "surface-variant": "#d8e3fb",
+                        "surface-dim": "#cfdaf2",
+                        "inverse-surface": "#263143",
+                        "on-tertiary-fixed": "#00174b",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary": "#004ed0",
+                        "on-background": "#111c2d",
+                        "background": "#f9f9ff",
+                        "on-error-container": "#93000a",
+                        "error-container": "#ffdad6",
+                        "on-primary-container": "#fff7f6",
+                        "on-secondary-fixed-variant": "#454747",
+                        "secondary-fixed": "#e2e2e2",
+                        "outline": "#946e69",
+                        "secondary": "#5d5f5f",
+                        "on-tertiary": "#ffffff",
+                        "inverse-primary": "#ffb4aa",
+                        "secondary-container": "#dfe0e0",
+                        "tertiary-container": "#2d68f0",
+                        "surface-container-high": "#dee8ff",
+                        "on-surface": "#111c2d",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "primary": "#b7000c",
+                        "on-primary-fixed": "#410001",
+                        "primary-container": "#e60012",
+                        "surface-tint": "#c0000d",
+                        "surface-container-highest": "#d8e3fb",
+                        "error": "#ba1a1a",
+                        "secondary-fixed-dim": "#c6c6c7",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed-variant": "#930007",
+                        "tertiary-fixed-dim": "#b4c5ff",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "on-tertiary-fixed-variant": "#003ea8",
+                        "primary-fixed-dim": "#ffb4aa",
+                        "inverse-on-surface": "#ecf1ff",
+                        "primary-fixed": "#ffdad5",
+                        "tertiary-fixed": "#dbe1ff",
+                        "surface-container-low": "#f0f3ff",
+                        "surface-container": "#e7eeff",
+                        "surface": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "sm": "12px",
+                        "container-margin": "20px",
+                        "3xl": "64px",
+                        "xs": "8px",
+                        "md": "16px",
+                        "base": "4px",
+                        "xl": "32px",
+                        "2xl": "48px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Plus Jakarta Sans"],
+                        "body-lg": ["Inter"],
+                        "title-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                        "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .bg-mesh {
+            background-color: #f9f9ff;
+            background-image: radial-gradient(at 0% 0%, rgba(183, 0, 12, 0.05) 0px, transparent 50%),
+                              radial-gradient(at 100% 0%, rgba(0, 78, 208, 0.05) 0px, transparent 50%);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-mesh font-body-md text-on-surface antialiased min-h-screen pb-32">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-lg border-b border-white/20 shadow-sm flex justify-between items-center px-container-margin py-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary/20">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a smiling Indonesian citizen, dressed in casual modern attire, set against a softly blurred urban background of Mesuji. The lighting is warm and natural, following a premium civic-tech aesthetic with high clarity and vibrant skin tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdifgLO6orKN_u26lrLn_Uoi4YSC4eP7SDJMHpums6g0jbU6qSJlYl5YYWnvmYP_I7McL8Ffg7gfRaKkpS5vyKIZ8FSjhU5q8Rynd3_RozylbHD6Mx_enCgHJLmJhohwNltXvfM3WTaFIvdyzSy7bngtEupc8VmAyq_AfsAT1psOQun6Qq3G9n4bbKxGmOgxlAkMeMtgNn5wiOl8nHRGQDYTZM5R3t8Qs3vrRF3qC-nO6LeMjZWUcgk3fDb0FI0Naxeac-4cAPdm0"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Mesuji Bergerak</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high/50 transition-all active:scale-95">
+<span class="material-symbols-outlined text-primary">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-container-margin space-y-8">
+<!-- UMKM Section (Tolong UMKM) -->
+<section class="space-y-6" id="umkm">
+<div class="flex flex-col gap-4">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">TOLONG UMKM</h2>
+<!-- Search & Filter -->
+<div class="flex gap-2">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full pl-12 pr-4 py-3 bg-white border border-outline-variant rounded-full focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all font-body-md" placeholder="Cari produk lokal Mesuji..." type="text"/>
+</div>
+<button class="w-12 h-12 flex items-center justify-center bg-white border border-outline-variant rounded-xl text-primary hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">filter_list</span>
+</button>
+</div>
+<!-- Categories -->
+<div class="flex gap-4 overflow-x-auto hide-scrollbar py-2">
+<button class="flex flex-col items-center gap-2 min-w-[80px] group">
+<div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined text-2xl">restaurant</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Kuliner</span>
+</button>
+<button class="flex flex-col items-center gap-2 min-w-[80px] group">
+<div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined text-2xl">brush</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Kerajinan</span>
+</button>
+<button class="flex flex-col items-center gap-2 min-w-[80px] group">
+<div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined text-2xl">styler</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Fashion</span>
+</button>
+<button class="flex flex-col items-center gap-2 min-w-[80px] group">
+<div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+<span class="material-symbols-outlined text-2xl">agriculture</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant">Pertanian</span>
+</button>
+</div>
+</div>
+<!-- Bento-style Product Grid -->
+<div class="grid grid-cols-2 gap-4">
+<!-- Product Card 1 -->
+<div class="glass-card rounded-2xl overflow-hidden flex flex-col shadow-sm group">
+<div class="relative h-40 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A gourmet close-up shot of traditional Mesuji crackers, golden brown and crispy, arranged artistically in a woven bamboo basket. The background is a soft-focus wooden table in a brightly lit local kitchen. The lighting is clean and professional, highlighting the texture and quality of the local food product." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFdRmLefxqrSn5UhyHEnOYhtlJeKYdX5KNZOtpO9mLibfQSTaF9JtCl822xdxnEkRK9YfaQJHgDf8aVD-BEgmj0DZ0zVd-m69Wg_F2iTW2BsgJzATwliYjFS2dBsaLD0hPQ4ySG0NvRwzDxB4wcAh4OPZX7FuxlyERhfcwPck450BUxCPJd5Ft56dArS9bziUM_VcCsERe2xd9W5ixZ4FXyuaEN9tMg9sUd4Wc-vWjPcLiV2JLBa5uaRLQqLp3RiYiSyxHXpAtvZ8"/>
+<div class="absolute top-2 right-2 px-2 py-1 bg-primary text-white text-[10px] font-bold rounded-lg uppercase tracking-wider">Terlaris</div>
+</div>
+<div class="p-3 flex flex-col flex-1 gap-1">
+<h3 class="font-title-md text-body-lg text-on-surface leading-tight line-clamp-1">Krupuk Kemplang Mesuji</h3>
+<p class="font-label-md text-primary">Rp 25.000</p>
+<button class="mt-2 w-full py-2 bg-[#25D366] text-white rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="font-label-md text-[11px]">Pesan via WA</span>
+</button>
+</div>
+</div>
+<!-- Product Card 2 -->
+<div class="glass-card rounded-2xl overflow-hidden flex flex-col shadow-sm group">
+<div class="relative h-40 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A beautiful handmade batik cloth from Mesuji featuring intricate traditional motifs in deep red and cream tones. The fabric is elegantly draped over a minimalist wooden mannequin in a bright, modern studio. The soft light emphasizes the fine weave and vibrant colors of the artisanal craft." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFRXAH9dnB-KHSTLqKSODLG_NRq_N3aPgF26vMiXfGR5NZIjm7Zk7rSdzgCOQY2ofRfIeh5uFl-PmBt1mcDyxiwJtsYCbrcK8mQdToBje_tZm4PifIKgXHxVxHp20M97F4oDgXOtkJhidjnMnmPNso4xgw7kfbWNjh9t4pE2ZtbFDq_d_bH7ICK9kvGB3WV8TGalHkQoszWBUy51KyPoxly8maFyI-MIb7BvqsQgP89fer0P8hNASPHAFFBBFLD-L3sGMoALo-JOo"/>
+</div>
+<div class="p-3 flex flex-col flex-1 gap-1">
+<h3 class="font-title-md text-body-lg text-on-surface leading-tight line-clamp-1">Batik Tulis Khas Mesuji</h3>
+<p class="font-label-md text-primary">Rp 185.000</p>
+<button class="mt-2 w-full py-2 bg-[#25D366] text-white rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="font-label-md text-[11px]">Pesan via WA</span>
+</button>
+</div>
+</div>
+<!-- Product Card 3 -->
+<div class="glass-card rounded-2xl overflow-hidden flex flex-col shadow-sm group">
+<div class="relative h-40 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A professional product shot of premium organic honey in a glass jar with a minimalist label. The honey is a rich amber color, illuminated by warm sunlight passing through it. Small wooden honey dipper rests beside it on a white surface, creating a high-end, healthy lifestyle aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAFdxnvogOPwc-pry0pPaIzh3Q0E2WAh7FYtP2DnkIFU_6ahTl4yHWFmM1ZWvPGRWPv-sNoxGGVg7AXhIDdQ4yfGFQpIEzDpaQzKD29ka6c1oryfqFlw1LPsZujyr99ls7_E7DIwbGxGyQ0KT1wfpKj3vyLjAeP-uhHQ7NZ4x4mKP28TUo48-0m1nCV80r4TEjArgcWYok9bAgxgZhpEdqhDrfQSXU_7w9XHLOcjcA653XlkwUJlj7n6MHOZMk9VI--pVlsvzin2js"/>
+</div>
+<div class="p-3 flex flex-col flex-1 gap-1">
+<h3 class="font-title-md text-body-lg text-on-surface leading-tight line-clamp-1">Madu Hutan Asli</h3>
+<p class="font-label-md text-primary">Rp 75.000</p>
+<button class="mt-2 w-full py-2 bg-[#25D366] text-white rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="font-label-md text-[11px]">Pesan via WA</span>
+</button>
+</div>
+</div>
+<!-- Product Card 4 -->
+<div class="glass-card rounded-2xl overflow-hidden flex flex-col shadow-sm group">
+<div class="relative h-40 overflow-hidden">
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A beautifully crafted woven handbag made from natural fibers, featuring a modern minimalist design. The bag is placed on a clean marble pedestal in a bright art gallery setting. The lighting is soft and directional, showcasing the intricate texture and high quality of the local Mesuji craftsmanship." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDyIWCP6z_htEwEy5HNpvdCEEor85GYj6Wywl3xQXGwms1fsA_y8edGyWHbIHaLmX3-mX9_lJr-ISM_8zCMsLQzrtOmy86n_nvfFZCDYfap7b4ZFBJxsUMNd6IkMInUcEtJsYSuj-9af7gqw3VKEtJXlzYnhVW98dKEnWLM9kPEdyvMA_AVI-5lmo3G7lf9b_15F_Lr_6TFYC64-egu3kf_LBUqp4ZVTOySkzeCNQdEZm3g35OOqzQmsy9PLULgZKI7zN8mCZWl3Yc"/>
+</div>
+<div class="p-3 flex flex-col flex-1 gap-1">
+<h3 class="font-title-md text-body-lg text-on-surface leading-tight line-clamp-1">Tas Anyaman Modern</h3>
+<p class="font-label-md text-primary">Rp 120.000</p>
+<button class="mt-2 w-full py-2 bg-[#25D366] text-white rounded-xl flex items-center justify-center gap-2 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="font-label-md text-[11px]">Pesan via WA</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Divider -->
+<hr class="border-outline-variant/30"/>
+<!-- Job Board Section (Tolong Kerja) -->
+<section class="space-y-6" id="loker">
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">TOLONG Kerja</h2>
+<p class="font-body-md text-on-surface-variant">Loker Mesuji Terkini</p>
+</div>
+<button class="text-primary font-label-md underline">Lihat Semua</button>
+</div>
+<!-- Digital CV Banner -->
+<div class="relative p-6 rounded-3xl bg-primary text-white overflow-hidden shadow-lg group active:scale-[0.98] transition-all">
+<div class="relative z-10 space-y-4">
+<div class="space-y-1">
+<h3 class="font-title-md text-title-md">Upload CV Digital</h3>
+<p class="text-[13px] opacity-90 leading-relaxed max-w-[200px]">Tingkatkan peluang kerja Anda dengan CV digital yang terverifikasi Pemkab.</p>
+</div>
+<button class="px-5 py-2.5 bg-white text-primary rounded-xl font-bold text-label-md shadow-sm">Upload Sekarang</button>
+</div>
+<!-- Abstract visual element -->
+<div class="absolute -right-8 -bottom-8 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+<span class="material-symbols-outlined absolute right-6 top-1/2 -translate-y-1/2 text-white/20 text-8xl pointer-events-none">contact_page</span>
+</div>
+<!-- Job Listings -->
+<div class="space-y-4">
+<!-- Job Card 1 -->
+<div class="glass-card p-4 rounded-2xl flex flex-col gap-4 shadow-sm border-l-4 border-l-primary">
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">inventory_2</span>
+</div>
+<div>
+<h4 class="font-title-md text-body-lg text-on-surface">Admin Gudang</h4>
+<p class="font-label-md text-on-surface-variant opacity-70">PT. Mesuji Makmur Utama</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-surface-variant text-primary text-[10px] font-bold rounded-md">FULL TIME</span>
+</div>
+<div class="flex flex-wrap gap-x-4 gap-y-2 text-on-surface-variant/80">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[12px]">Simpang Pematang</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">payments</span>
+<span class="text-[12px]">Rp 3.5jt - 4.5jt</span>
+</div>
+</div>
+<button class="w-full py-3 bg-primary text-white rounded-xl font-bold text-label-md hover:bg-primary-container transition-colors shadow-sm">Lamar Sekarang</button>
+</div>
+<!-- Job Card 2 -->
+<div class="glass-card p-4 rounded-2xl flex flex-col gap-4 shadow-sm">
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">engineering</span>
+</div>
+<div>
+<h4 class="font-title-md text-body-lg text-on-surface">Staff Lapangan</h4>
+<p class="font-label-md text-on-surface-variant opacity-70">Dinas Pekerjaan Umum</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-surface-variant text-tertiary text-[10px] font-bold rounded-md">KONTRAK</span>
+</div>
+<div class="flex flex-wrap gap-x-4 gap-y-2 text-on-surface-variant/80">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[12px]">Tanjung Raya</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">payments</span>
+<span class="text-[12px]">Kompetitif</span>
+</div>
+</div>
+<button class="w-full py-3 border border-primary text-primary rounded-xl font-bold text-label-md hover:bg-surface-container transition-colors">Lamar Sekarang</button>
+</div>
+<!-- Job Card 3 -->
+<div class="glass-card p-4 rounded-2xl flex flex-col gap-4 shadow-sm">
+<div class="flex justify-between items-start">
+<div class="flex gap-4">
+<div class="w-12 h-12 rounded-xl bg-surface-container-high flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface-variant">precision_manufacturing</span>
+</div>
+<div>
+<h4 class="font-title-md text-body-lg text-on-surface">Operator Mesin</h4>
+<p class="font-label-md text-on-surface-variant opacity-70">Kilang Padi Jaya</p>
+</div>
+</div>
+<span class="px-2 py-1 bg-surface-variant text-on-surface-variant text-[10px] font-bold rounded-md">FREELANCE</span>
+</div>
+<div class="flex flex-wrap gap-x-4 gap-y-2 text-on-surface-variant/80">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span class="text-[12px]">Panca Jaya</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">payments</span>
+<span class="text-[12px]">Rp 2jt - 3jt</span>
+</div>
+</div>
+<button class="w-full py-3 border border-primary text-primary rounded-xl font-bold text-label-md hover:bg-surface-container transition-colors">Lamar Sekarang</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface/85 backdrop-blur-xl border-t border-white/30 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] flex justify-around items-center h-20 px-4 pb-safe">
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-md text-label-md">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">forum</span>
+<span class="font-label-md text-label-md">Aspirasi</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-all active:scale-90">
+<div class="w-12 h-12 -mt-8 bg-primary rounded-full flex items-center justify-center shadow-lg active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<span class="font-label-md text-label-md mt-1">AI</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary font-bold after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:mt-1 active:scale-90">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">newspaper</span>
+<span class="font-label-md text-label-md">News</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant opacity-70 hover:text-primary transition-all active:scale-90">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</button>
+</nav>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('touchstart', function() {
+                this.classList.add('scale-95');
+            });
+            button.addEventListener('touchend', function() {
+                this.classList.remove('scale-95');
+            });
+        });
+        
+        // Sticky Header Effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 20) {
+                header.classList.add('shadow-md');
+                header.classList.remove('shadow-sm');
+            } else {
+                header.classList.add('shadow-sm');
+                header.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body></html>

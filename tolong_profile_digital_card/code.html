@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mesuji Bergerak - News & Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Plus+Jakarta+Sans:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#5f3f3b",
+                    "on-secondary-container": "#616363",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-container": "#f8f7ff",
+                    "outline-variant": "#e9bcb6",
+                    "surface-variant": "#d8e3fb",
+                    "surface-dim": "#cfdaf2",
+                    "inverse-surface": "#263143",
+                    "on-tertiary-fixed": "#00174b",
+                    "surface-bright": "#f9f9ff",
+                    "tertiary": "#004ed0",
+                    "on-background": "#111c2d",
+                    "background": "#f9f9ff",
+                    "on-error-container": "#93000a",
+                    "error-container": "#ffdad6",
+                    "on-primary-container": "#fff7f6",
+                    "on-secondary-fixed-variant": "#454747",
+                    "secondary-fixed": "#e2e2e2",
+                    "outline": "#946e69",
+                    "secondary": "#5d5f5f",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#ffb4aa",
+                    "secondary-container": "#dfe0e0",
+                    "tertiary-container": "#2d68f0",
+                    "surface-container-high": "#dee8ff",
+                    "on-surface": "#111c2d",
+                    "on-error": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "primary": "#b7000c",
+                    "on-primary-fixed": "#410001",
+                    "primary-container": "#e60012",
+                    "surface-tint": "#c0000d",
+                    "surface-container-highest": "#d8e3fb",
+                    "error": "#ba1a1a",
+                    "secondary-fixed-dim": "#c6c6c7",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#930007",
+                    "tertiary-fixed-dim": "#b4c5ff",
+                    "on-secondary-fixed": "#1a1c1c",
+                    "on-tertiary-fixed-variant": "#003ea8",
+                    "primary-fixed-dim": "#ffb4aa",
+                    "inverse-on-surface": "#ecf1ff",
+                    "primary-fixed": "#ffdad5",
+                    "tertiary-fixed": "#dbe1ff",
+                    "surface-container-low": "#f0f3ff",
+                    "surface-container": "#e7eeff",
+                    "surface": "#f9f9ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "sm": "12px",
+                    "container-margin": "20px",
+                    "3xl": "64px",
+                    "xs": "8px",
+                    "md": "16px",
+                    "base": "4px",
+                    "xl": "32px",
+                    "2xl": "48px",
+                    "lg": "24px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Plus Jakarta Sans"],
+                    "body-lg": ["Inter"],
+                    "title-md": ["Plus Jakarta Sans"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "title-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "label-sm": ["11px", {"lineHeight": "14px", "fontWeight": "500"}],
+                    "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .membership-card-gradient {
+            background: linear-gradient(135deg, #b7000c 0%, #e60012 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .membership-card-gradient::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);
+            transform: rotate(30deg);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-32">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-inverse-surface/80 backdrop-blur-lg border-b border-white/20 dark:border-white/10 shadow-sm flex justify-between items-center px-container-margin py-md">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional close-up portrait of a friendly Indonesian man named Budi Santoso, wearing a clean white shirt. The background is a soft-focus office setting with warm, natural lighting. The image has a clean, high-fidelity light-mode aesthetic consistent with a premium civic-tech application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAIoTr5TGwZHrcR7ELulCTXBidxNTIS4GCxoMTcqiROJYP5bkuHrGTEqepnMtYUl1NcCtm5sYJElAtSjdJ17_HKhZF-Ci_o-PSSSk3NNBxoZO565lhp9gWkMCHuzlbA3rr1nt-UmkKVavuMrtkHDC45zf5LW-Rkx7kYZbBFbbxKlYEuxWTrb3NA-JfhfiiA3ENJkdvoyJzLY_ct_hjg75Pa3PgzW-6K5FgtaK2kjKvEtiUpOsZuLHFGq-SKIx3-MjjryNzn9refDA"/>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Mesuji Bergerak</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full text-on-surface-variant hover:bg-surface-container-high/50 transition-all active:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-container-margin space-y-lg">
+<!-- News Feed Section -->
+<section class="space-y-md">
+<div class="flex justify-between items-center">
+<h2 class="font-title-md text-title-md text-on-surface">Kabar Mesuji</h2>
+<button class="text-label-md font-bold text-primary hover:underline">Lihat Semua</button>
+</div>
+<!-- News Cards - Bento Style Layout -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Highlight Card -->
+<div class="group glass-card rounded-xl overflow-hidden shadow-sm transition-transform hover:-translate-y-1">
+<div class="h-48 relative overflow-hidden">
+<img class="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500" data-alt="A wide-angle cinematic shot of a major bridge construction site over a wide river in Mesuji, Lampung. Large cranes and construction crews are active under a bright blue sky. The lighting is crisp and optimistic, representing progress and infrastructure development for the local community." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDa6OvlGRHDOwDDibblmeokOZXsWIjVgPVY5XEERk7k3mq9GtnUrAdlWQ7z7eRZwrc7uE5iG0YwKLNVDE5MTb8LsN0Jbj3f9KGPQrniMaYjx9vXM5u87ddYy0pW3hO0GbcJhA4MMM3mdEBTjOzZ7yTqyqJO1A7yaHx1P6Hfj4NR8mlz4kUiFyMO7gD0_EgmYpux3ZT2E9YPMyUmodOLBoCpfYGnG6NQ9On7m2yY_6-BmbJCRJkBfvJqkgeSZMk5Sv2O4__8IuS4oOo"/>
+<div class="absolute top-3 left-3 bg-primary text-white text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider">Terbaru</div>
+</div>
+<div class="p-md space-y-xs">
+<h3 class="font-title-md text-on-surface leading-tight">Pembangunan Jembatan Mesuji Dimulai</h3>
+<p class="text-body-md text-on-surface-variant line-clamp-2">Pemerintah daerah resmi memulai tahap pemancangan tiang pertama jembatan penghubung utama guna memperlancar logistik.</p>
+<div class="flex items-center gap-2 pt-2">
+<span class="material-symbols-outlined text-[16px] text-primary">calendar_today</span>
+<span class="text-label-sm text-on-secondary-container">12 Okt 2024</span>
+</div>
+</div>
+</div>
+<!-- Secondary News Cards -->
+<div class="space-y-md">
+<div class="flex gap-md glass-card p-sm rounded-xl shadow-sm hover:bg-surface-container-low transition-colors">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A vibrant action photo of a young Indonesian athlete from Mesuji holding a gold trophy and a certificate. The background shows a cheering crowd in a sports stadium. The lighting is energetic and celebratory, highlighting local achievement and community pride with high saturation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAem2NbMw3qf-tX49p78DeXcIgkbXxixNLdoZImJlN8CLebANeTulOgX3zrpMJWIzJuX7gneGNhHbyMx6MMd1Hztbu9TM6-5IJyO0-v5ljeJROZQOR92Ohtsxf31o6nk2yK6xNkMuSqioSkT02FKqEytRoHVfF1AdUjBQaYC5taBR_gMXPF0TM3wWQrMbXtw9ikecsrqV5vsQo0H8Q59c_djsvdy3SWtY_KaiYqryr-8jBubYr4lsBVR2xkGFf-XO-cHb7EIzCf05Q"/>
+</div>
+<div class="flex flex-col justify-center py-1">
+<h3 class="font-bold text-on-surface text-body-lg leading-snug">Prestasi Atlet Mesuji di Kancah Nasional</h3>
+<p class="text-label-sm text-on-secondary-container mt-1">2 jam yang lalu</p>
+</div>
+</div>
+<div class="flex gap-md glass-card p-sm rounded-xl shadow-sm hover:bg-surface-container-low transition-colors">
+<div class="w-24 h-24 rounded-lg overflow-hidden shrink-0">
+<img class="w-full h-full object-cover" data-alt="A high-quality photo of a bustling local UMKM market in Mesuji. Stalls are filled with traditional crafts and food products. The scene is bright and colorful, reflecting a thriving local economy and community engagement. The atmosphere is warm and inviting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDptrCDMqPxGAtE4kAiMvO1mCy9_9WExX5o3AD-RPCDt1CSkLdI0P8580nfLG743gUwUvfVsixOrJWyj-eGRP-fl5m5ngn7HGWwgysrr2UpcCO0FVm5_dLiMHNmkOxU8KhL4lEGV7bOYKcoF1WX41svjyy2G6GkrbiBqzVd0_sOPre1rVG8EfAv6n7MGw2V9VH9CwxmlK3dMITX4yhrUekLo784euL6J3Wwc3EdCLNXqkl_HJpVGx79c2wc54cH1c_azRlBll4GfLA"/>
+</div>
+<div class="flex flex-col justify-center py-1">
+<h3 class="font-bold text-on-surface text-body-lg leading-snug">Festival UMKM Mesuji Tarik Ribuan Pengunjung</h3>
+<p class="text-label-sm text-on-secondary-container mt-1">5 jam yang lalu</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Interactive Map Section -->
+<section class="space-y-md">
+<div class="flex justify-between items-center">
+<h2 class="font-title-md text-title-md text-on-surface">Peta Laporan Warga</h2>
+<div class="flex gap-2">
+<div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded-full border border-outline-variant">
+<div class="w-2 h-2 rounded-full bg-primary"></div>
+<span class="text-[10px] font-bold">Jalan</span>
+</div>
+<div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded-full border border-outline-variant">
+<div class="w-2 h-2 rounded-full bg-blue-500"></div>
+<span class="text-[10px] font-bold">Banjir</span>
+</div>
+</div>
+</div>
+<div class="relative h-[400px] w-full rounded-2xl overflow-hidden shadow-lg border border-outline-variant">
+<!-- Map Placeholder -->
+<div class="w-full h-full" data-location="Mesuji, Lampung, Indonesia" style="">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist vector-style map of the Mesuji region in Lampung. The map shows simplified roads and river lines. There are stylized digital pins in red, blue, and yellow scattered across the region. The aesthetic is modern civic-tech with a light slate background and soft shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwAlCStnvDRX8wwT4x0FE7MaTZE1FIbDuAdeSdzilSumiD3fRHmLaYgBPZPTAh5u3KoqJMnlSNElTiy0ZJ84OK6SNEO7Ic-7UKzue4ncNPhbcc7Q7eLHrSGOTZUTBvC7HYWuXPbAx-80oToxhoGzTbq0Dp70idBtplrgeGr2w91jBZ49jo680lm0b7LzL6t_iybMmyP0YYJ5HcLtMTFg6LgRPkVlH8rBuS5pdn1wT579iAoLsMAwnGWP1rIuCu3W_AeRnwsO8oEAk"/>
+</div>
+<!-- Custom Map Markers Overlay -->
+<div class="absolute inset-0 pointer-events-none">
+<!-- Red Pin (Road Damage) -->
+<div class="absolute top-1/4 left-1/3 pointer-events-auto">
+<div class="flex flex-col items-center animate-bounce">
+<div class="w-8 h-8 bg-primary rounded-full border-2 border-white flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined text-[18px]">construction</span>
+</div>
+<div class="w-1 h-2 bg-primary"></div>
+</div>
+</div>
+<!-- Blue Pin (Flood) -->
+<div class="absolute bottom-1/3 right-1/4 pointer-events-auto">
+<div class="flex flex-col items-center animate-pulse">
+<div class="w-8 h-8 bg-blue-500 rounded-full border-2 border-white flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined text-[18px]">water_drop</span>
+</div>
+<div class="w-1 h-2 bg-blue-500"></div>
+</div>
+</div>
+<!-- Yellow Pin (Community Report) -->
+<div class="absolute top-1/2 left-2/3 pointer-events-auto">
+<div class="flex flex-col items-center">
+<div class="w-8 h-8 bg-yellow-500 rounded-full border-2 border-white flex items-center justify-center text-white shadow-lg">
+<span class="material-symbols-outlined text-[18px]">group</span>
+</div>
+<div class="w-1 h-2 bg-yellow-500"></div>
+</div>
+</div>
+</div>
+<!-- Map Controls -->
+<div class="absolute bottom-4 left-4 flex flex-col gap-2">
+<button class="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors pointer-events-auto">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="w-10 h-10 bg-white rounded-lg shadow-md flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors pointer-events-auto">
+<span class="material-symbols-outlined">remove</span>
+</button>
+</div>
+<!-- Floating Action Button -->
+<button class="absolute bottom-6 right-6 flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-full shadow-[0_8px_30px_rgb(183,0,12,0.4)] hover:scale-105 active:scale-95 transition-all pointer-events-auto">
+<span class="material-symbols-outlined">add_circle</span>
+<span class="font-bold">Lapor Kejadian</span>
+</button>
+</div>
+</section>
+<!-- Profile & Membership Section -->
+<section class="space-y-lg pt-8">
+<h2 class="font-title-md text-title-md text-on-surface">Profil Saya</h2>
+<!-- Membership Card -->
+<div class="membership-card-gradient w-full aspect-[1.6/1] rounded-2xl p-6 text-white shadow-2xl flex flex-col justify-between group">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-bold text-headline-lg-mobile tracking-tighter">PSI</span>
+<div class="h-4 w-[1px] bg-white/30"></div>
+<span class="text-xs font-medium uppercase tracking-widest opacity-80">Mesuji Digital Card</span>
+</div>
+<div class="inline-flex items-center gap-1 bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/30">
+<span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="text-[10px] font-bold">Anggota Terverifikasi</span>
+</div>
+</div>
+<div class="w-12 h-12 bg-white/10 backdrop-blur-md rounded-lg flex items-center justify-center border border-white/20">
+<span class="material-symbols-outlined text-[32px] opacity-80">contactless</span>
+</div>
+</div>
+<div class="flex justify-between items-end">
+<div class="space-y-1">
+<p class="text-[10px] uppercase tracking-widest opacity-60">Nama Lengkap</p>
+<h4 class="font-headline-lg text-white">Budi Santoso</h4>
+<p class="font-mono text-sm opacity-80">ID: MSJ-2024-001</p>
+</div>
+<div class="bg-white p-2 rounded-lg shadow-inner">
+<img class="w-16 h-16 opacity-90" data-alt="A clean, high-contrast QR code rendered on a white background with a subtle red accent in the center. The QR code looks professional and ready for digital scanning, symbolizing modern civic identity and verification within a high-tech ecosystem." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4ntK4gV-WB0cO6V2BAzQhrfEQr_bGLFOERNBa-XVI_nmL4c13qwGMN0xUCvyM2Lv5qXATj-nTL8aWzizMkEVVxVjLIuz0Ef9LgEboxDZu4I-L8OHZ_xzXhYkkHPNQl3ucZ5aD4znscw-3NhH4-xNtyfM4AzyiSzbFMx4GlIGnbbDdxhJZC-scCm2aY_SFFfVpVNA1rkbJ0x-phpsqLL7WKsiUscmSku4-Z1FVWTJL0Ic-EoNC7l5hkAxEt2STVUYGF4EzZ0cELpk"/>
+</div>
+</div>
+</div>
+<!-- Profile Stats -->
+<div class="grid grid-cols-2 gap-md">
+<div class="glass-card p-md rounded-xl flex items-center gap-4 border-l-4 border-primary">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="text-headline-lg font-bold text-on-surface">5</p>
+<p class="text-label-sm text-on-surface-variant">Laporan</p>
+</div>
+</div>
+<div class="glass-card p-md rounded-xl flex items-center gap-4 border-l-4 border-tertiary">
+<div class="w-10 h-10 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">volunteer_activism</span>
+</div>
+<div>
+<p class="text-headline-lg font-bold text-on-surface">2</p>
+<p class="text-label-sm text-on-surface-variant">Bantuan</p>
+</div>
+</div>
+</div>
+<!-- Profile Menu -->
+<div class="glass-card rounded-2xl overflow-hidden divide-y divide-outline-variant/30 shadow-sm">
+<a class="flex items-center justify-between p-md hover:bg-surface-container-low transition-colors group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">history</span>
+</div>
+<span class="font-medium text-on-surface">Riwayat Laporan</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-md hover:bg-surface-container-low transition-colors group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">handshake</span>
+</div>
+<span class="font-medium text-on-surface">Bantuan Saya</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-md hover:bg-surface-container-low transition-colors group" href="#">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+</div>
+<span class="font-medium text-on-surface">Pengaturan</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant/40">chevron_right</span>
+</a>
+<a class="flex items-center justify-between p-md hover:bg-error/5 transition-colors group text-error" href="#">
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-error/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+</div>
+<span class="font-bold">Keluar</span>
+</div>
+</a>
+</div>
+</section>
+</main>
+<!-- Navigation Drawer (Sidebar Mockup for Desktop) -->
+<aside class="hidden lg:flex fixed left-0 top-0 h-full w-80 bg-surface dark:bg-inverse-surface shadow-xl flex-col py-lg z-[60]">
+<div class="px-md mb-lg">
+<h2 class="font-headline-lg text-headline-lg font-bold text-primary mb-lg">Menu Utama</h2>
+<div class="flex items-center gap-4 p-4 rounded-xl bg-surface-container-low dark:bg-surface-container-lowest">
+<div class="w-12 h-12 rounded-full overflow-hidden border-2 border-primary">
+<img class="w-full h-full object-cover" data-alt="A circular profile photo of Budi Santoso, an Indonesian citizen, looking professional and approachable. The photo has a clean white background and sharp focus, conveying a sense of verified identity and trustworthiness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCRsBTeTZ_iSmA2yfDr2PplavNk4CBe7AcV5dD75YQ8ZiK9DtNHwq0x2TIqg3WncNGtYr1Kl2U60HNtLsXBiAlII-s3BR0ciFEZwvSV_437uWJ5MMi0RXlkzX3VaCtpSRkZ9POPHq0f180ByjnjF5y1vOB522u21l1bEFNZB-Rw1EMeBDM_-SjTzzLsYdZ5suhv337FLjoQZ-7LNrUGwOAQNPiuTb9SY6CXNwyqoz3OIi_6DVhLglv-XBP5-wFWjDDRWk6bMS5l5Ig"/>
+</div>
+<div>
+<h3 class="font-bold text-on-surface">Budi Santoso</h3>
+<p class="text-xs text-on-surface-variant opacity-70">Verified Citizen</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-2 space-y-1">
+<a class="flex items-center gap-4 bg-primary-container text-on-primary-container font-bold rounded-lg px-4 py-3" href="#">
+<span class="material-symbols-outlined">newspaper</span> News & Feed
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant hover:bg-surface-variant rounded-lg px-4 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined">map</span> Peta Interaktif
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant hover:bg-surface-variant rounded-lg px-4 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined">emergency</span> Emergency SOS
+            </a>
+<a class="flex items-center gap-4 text-on-surface-variant hover:bg-surface-variant rounded-lg px-4 py-3 transition-colors" href="#">
+<span class="material-symbols-outlined">storefront</span> UMKM Mesuji
+            </a>
+</nav>
+</aside>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface/85 dark:bg-inverse-surface/85 backdrop-blur-xl border-t border-white/30 dark:border-white/10 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl flex justify-around items-center h-20 px-4 pb-safe md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-container opacity-70 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-md">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-container opacity-70 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="text-label-md">Aspirasi</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-container opacity-70 transition-transform active:scale-90" href="#">
+<div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white -mt-10 shadow-lg border-4 border-background">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">smart_toy</span>
+</div>
+<span class="text-label-md mt-1">AI</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed font-bold after:content-[''] after:w-1 after:h-1 after:bg-primary after:rounded-full after:mt-1 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">newspaper</span>
+<span class="text-label-md">News</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-container opacity-70 transition-transform active:scale-90" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple scroll interaction for the header
+        let lastScroll = 0;
+        const header = document.querySelector('header');
+        
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > lastScroll && currentScroll > 100) {
+                header.style.transform = 'translateY(-100%)';
+            } else {
+                header.style.transform = 'translateY(0)';
+            }
+            lastScroll = currentScroll;
+        });
+
+        // Add haptic feedback simulation
+        document.querySelectorAll('button, a').forEach(elem => {
+            elem.addEventListener('click', () => {
+                if (window.navigator.vibrate) {
+                    window.navigator.vibrate(10);
+                }
+            });
+        });
+    </script>
+</body></html>
