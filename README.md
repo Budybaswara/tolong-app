@@ -51,6 +51,18 @@ docker compose -f deploy/dokploy/docker-compose.yml up -d --build
 
 For Dokploy, set environment variables from `.env.example` in the project settings and expose port `3001` for the API and `3000` for admin.
 
+Repository for Dokploy/Git deployment:
+
+```text
+https://github.com/Bankcash2026/tolong-app
+```
+
+Current Vercel admin production URL:
+
+```text
+https://tolong-admin.vercel.app
+```
+
 ## Documentation
 
 - [INSTALL.md](INSTALL.md)
