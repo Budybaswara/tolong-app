@@ -63,6 +63,14 @@ Current Vercel admin production URL:
 https://tolong-admin.vercel.app
 ```
 
+Set these Vercel environment variables before exposing the admin panel:
+
+```text
+NEXT_PUBLIC_API_BASE_URL=https://dokploy.closeclaw.site/tolong-api/v1
+ADMIN_ACCESS_CODE=<strong shared admin login code>
+ADMIN_SESSION_SECRET=<64+ character random secret>
+```
+
 ## Documentation
 
 - [INSTALL.md](INSTALL.md)

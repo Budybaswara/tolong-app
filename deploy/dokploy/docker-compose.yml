@@ -41,7 +41,10 @@ services:
       dockerfile: apps/admin/Dockerfile
     restart: unless-stopped
     environment:
-      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL}
+      API_BASE_URL: ${API_BASE_URL:-http://api:3001/v1}
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-https://dokploy.closeclaw.site/tolong-api/v1}
+      ADMIN_ACCESS_CODE: ${ADMIN_ACCESS_CODE:-change-this-admin-login-code}
+      ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-change-this-admin-session-secret}
     ports:
       - "3000:3000"
     depends_on:

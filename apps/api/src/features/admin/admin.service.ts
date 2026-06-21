@@ -5,6 +5,7 @@ import {
   CreateArticleDto,
   CreateAssistanceProgramDto,
   CreateBannerDto,
+  CreateCategoryDto,
   CreateJobPostingDto,
   CreateProductDto,
   UpdateReportStatusDto
@@ -89,6 +90,51 @@ export class AdminService {
       orderBy: { createdAt: 'desc' },
       take: 100
     });
+  }
+
+  categories(module?: string) {
+    return this.prisma.category.findMany({
+      where: module ? { module } : undefined,
+      orderBy: [{ module: 'asc' }, { name: 'asc' }]
+    });
+  }
+
+  createCategory(body: CreateCategoryDto) {
+    const id = `${body.module}-${body.name}`;
+    return this.prisma.category.upsert({
+      where: { id },
+      update: {
+        module: body.module,
+        name: body.name,
+        icon: body.icon,
+        color: body.color
+      },
+      create: {
+        id,
+        module: body.module,
+        name: body.name,
+        icon: body.icon,
+        color: body.color
+      }
+    });
+  }
+
+  async bootstrapDefaults() {
+    const defaults: CreateCategoryDto[] = [
+      { module: 'REPORT', name: 'Infrastruktur', icon: 'construction', color: '#b7000c' },
+      { module: 'REPORT', name: 'Kesehatan', icon: 'local_hospital', color: '#004ed0' },
+      { module: 'EMERGENCY', name: 'Ambulance', icon: 'ambulance', color: '#004ed0' },
+      { module: 'EMERGENCY', name: 'Pemadam', icon: 'fire_truck', color: '#b7000c' },
+      { module: 'PRODUCT', name: 'Kuliner', icon: 'restaurant', color: '#e60012' },
+      { module: 'PRODUCT', name: 'Kerajinan', icon: 'brush', color: '#004ed0' },
+      { module: 'NEWS', name: 'Ekonomi', icon: 'storefront', color: '#004ed0' },
+      { module: 'NEWS', name: 'Kegiatan DPD', icon: 'campaign', color: '#b7000c' },
+      { module: 'ASSISTANCE', name: 'Pendidikan', icon: 'school', color: '#004ed0' },
+      { module: 'ASSISTANCE', name: 'UMKM', icon: 'storefront', color: '#b7000c' },
+      { module: 'JOB', name: 'Administrasi', icon: 'work', color: '#004ed0' }
+    ];
+    const categories = await Promise.all(defaults.map((item) => this.createCategory(item)));
+    return { categories, count: categories.length };
   }
 
   updateUserRole(id: string, role: Role) {

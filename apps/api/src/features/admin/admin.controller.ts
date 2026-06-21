@@ -5,6 +5,7 @@ import {
   CreateArticleDto,
   CreateAssistanceProgramDto,
   CreateBannerDto,
+  CreateCategoryDto,
   CreateJobPostingDto,
   CreateProductDto,
   UpdateReportStatusDto
@@ -33,6 +34,21 @@ export class AdminController {
   @Get('users')
   users(@Query('q') q?: string, @Query('role') role?: Role) {
     return this.admin.users({ q, role });
+  }
+
+  @Get('categories')
+  categories(@Query('module') module?: string) {
+    return this.admin.categories(module);
+  }
+
+  @Post('categories')
+  createCategory(@Body() body: CreateCategoryDto) {
+    return this.admin.createCategory(body);
+  }
+
+  @Post('bootstrap-defaults')
+  bootstrapDefaults() {
+    return this.admin.bootstrapDefaults();
   }
 
   @Patch('users/:id/role')

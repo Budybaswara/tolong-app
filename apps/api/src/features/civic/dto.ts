@@ -255,6 +255,20 @@ export class CreateBannerDto {
   sortOrder?: number;
 }
 
+export class CreateCategoryDto {
+  @IsString()
+  module!: string;
+
+  @IsString()
+  name!: string;
+
+  @IsString()
+  icon!: string;
+
+  @IsString()
+  color!: string;
+}
+
 export class CreateJobPostingDto {
   @IsString()
   title!: string;

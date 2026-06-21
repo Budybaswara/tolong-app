@@ -22,7 +22,14 @@ Important values:
 DATABASE_URL=postgresql://user:password@host:5432/tolong?schema=public
 NEXT_PUBLIC_API_BASE_URL=https://api.your-domain.id/v1
 CORS_ORIGIN=https://admin.your-domain.id
+ADMIN_ACCESS_CODE=replace-with-strong-admin-login-code
+ADMIN_SESSION_SECRET=replace-with-64-char-admin-session-secret
 ```
+
+For Vercel admin hosting, set `NEXT_PUBLIC_API_BASE_URL`, `ADMIN_ACCESS_CODE`, and
+`ADMIN_SESSION_SECRET` in the Vercel project environment variables. The admin app
+uses an httpOnly session cookie and server-side proxy routes under `/api/admin/*`
+so browser CORS does not block dashboard data.
 
 ## 3. Deploy With Dokploy
 
