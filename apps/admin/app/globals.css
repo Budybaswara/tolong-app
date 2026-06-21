@@ -84,14 +84,14 @@ button {
 
 .logo-mark {
   overflow: hidden;
-  background: #111;
+  background: #fff;
+  padding: 3px;
 }
 
 .logo-mark img {
   height: 100%;
   width: 100%;
-  object-fit: cover;
-  transform: scale(1.08);
+  object-fit: contain;
 }
 
 .brand b,
