@@ -4,6 +4,7 @@ const cookieName = 'tolong_admin_session';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  if (/\.(?:png|jpg|jpeg|gif|webp|svg|ico)$/i.test(pathname)) return NextResponse.next();
   if (pathname === '/login' || pathname.startsWith('/api/auth')) return NextResponse.next();
 
   const expected = await sessionToken();
