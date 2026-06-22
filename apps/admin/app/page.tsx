@@ -26,7 +26,9 @@ import {
   Search,
   ShieldCheck,
   Store,
+  UploadCloud,
   Users,
+  Video,
   X
 } from 'lucide-react';
 import {
@@ -88,6 +90,13 @@ type UserItem = {
 };
 
 type NavItem = { id: SectionId; label: string; icon: LucideIcon };
+type UploadedMedia = {
+  url: string;
+  path: string;
+  type: 'IMAGE' | 'VIDEO' | 'DOCUMENT';
+  mimeType: string;
+  sizeBytes: number;
+};
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://dokploy.closeclaw.site/tolong-api/v1';
 const adminApiBase = '/api/admin';
@@ -134,7 +143,8 @@ const initialForms = {
     excerpt: '',
     content: '',
     categoryId: '',
-    featured: true
+    featured: true,
+    media: [] as UploadedMedia[]
   },
   product: {
     name: '',
@@ -143,7 +153,8 @@ const initialForms = {
     whatsapp: '',
     sellerName: '',
     district: 'Mesuji',
-    categoryId: ''
+    categoryId: '',
+    media: [] as UploadedMedia[]
   },
   job: {
     title: '',
@@ -183,6 +194,7 @@ export default function Dashboard() {
   const [nextStatus, setNextStatus] = useState<Exclude<ReportStatus, 'ALL'>>('VERIFIED');
   const [statusNote, setStatusNote] = useState('');
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState<Record<string, boolean>>({});
   const [forms, setForms] = useState(initialForms);
 
   const load = useCallback(async () => {
@@ -259,6 +271,45 @@ export default function Dashboard() {
       throw new Error(Array.isArray(message) ? message.join(', ') : message ?? 'Request gagal diproses');
     }
     return payload;
+  }
+
+  async function uploadMedia(target: 'banner' | 'news' | 'product', folder: 'banners' | 'articles' | 'products', file: File) {
+    setUploading((current) => ({ ...current, [target]: true }));
+    setError(null);
+    try {
+      const formData = new FormData();
+      formData.append('folder', folder);
+      formData.append('file', file);
+      const response = await fetch(`${adminApiBase}/upload`, {
+        method: 'POST',
+        body: formData
+      });
+      const payload = await response.json().catch(() => null);
+      if (!response.ok) {
+        const message = payload?.message;
+        throw new Error(Array.isArray(message) ? message.join(', ') : message ?? 'Upload file gagal');
+      }
+      const media: UploadedMedia = {
+        url: payload.publicUrl,
+        path: payload.path,
+        type: file.type.startsWith('video/') ? 'VIDEO' : file.type === 'application/pdf' ? 'DOCUMENT' : 'IMAGE',
+        mimeType: payload.contentType ?? file.type,
+        sizeBytes: payload.sizeBytes ?? file.size
+      };
+      if (target === 'banner') {
+        updateForm('banner', { imageUrl: payload.publicUrl });
+      } else if (target === 'news') {
+        updateForm('news', { media: [media] });
+      } else {
+        updateForm('product', { media: [media] });
+      }
+      setNotice(`File ${file.name} berhasil diunggah.`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Upload file gagal');
+      setState('error');
+    } finally {
+      setUploading((current) => ({ ...current, [target]: false }));
+    }
   }
 
   async function bootstrapDefaults() {
@@ -551,9 +602,14 @@ export default function Dashboard() {
               <FormField label="Subjudul">
                 <textarea rows={3} value={forms.banner.subtitle} onChange={(event) => updateForm('banner', { subtitle: event.target.value })} />
               </FormField>
-              <FormField label="URL Gambar">
-                <input value={forms.banner.imageUrl} onChange={(event) => updateForm('banner', { imageUrl: event.target.value })} placeholder="https://..." />
-              </FormField>
+              <UploadControl
+                id="banner-media"
+                label="Foto Banner"
+                accept="image/*"
+                media={forms.banner.imageUrl ? [{ url: forms.banner.imageUrl, path: 'banner', type: 'IMAGE', mimeType: 'image/*', sizeBytes: 0 }] : []}
+                uploading={Boolean(uploading.banner)}
+                onUpload={(file) => void uploadMedia('banner', 'banners', file)}
+              />
               <div className="form-grid two">
                 <FormField label="CTA Label">
                   <input value={forms.banner.ctaLabel} onChange={(event) => updateForm('banner', { ctaLabel: event.target.value })} />
@@ -578,6 +634,14 @@ export default function Dashboard() {
               <FormField label="Kategori Berita">
                 <CategorySelect value={forms.news.categoryId} categories={categoryOptions('NEWS')} onChange={(value) => updateForm('news', { categoryId: value })} />
               </FormField>
+              <UploadControl
+                id="news-media"
+                label="Foto atau Video Berita"
+                accept="image/*,video/*"
+                media={forms.news.media}
+                uploading={Boolean(uploading.news)}
+                onUpload={(file) => void uploadMedia('news', 'articles', file)}
+              />
               <FormField label="Ringkasan">
                 <textarea rows={3} value={forms.news.excerpt} onChange={(event) => updateForm('news', { excerpt: event.target.value })} />
               </FormField>
@@ -656,6 +720,14 @@ export default function Dashboard() {
               <FormField label="Deskripsi">
                 <textarea rows={4} value={forms.product.description} onChange={(event) => updateForm('product', { description: event.target.value })} />
               </FormField>
+              <UploadControl
+                id="product-media"
+                label="Foto Produk"
+                accept="image/*"
+                media={forms.product.media}
+                uploading={Boolean(uploading.product)}
+                onUpload={(file) => void uploadMedia('product', 'products', file)}
+              />
               <div className="form-grid two">
                 <FormField label="Harga">
                   <input type="number" value={forms.product.price} onChange={(event) => updateForm('product', { price: event.target.value })} />
@@ -977,6 +1049,67 @@ function FormField({ label, children }: { label: string; children: ReactNode }) 
       <span>{label}</span>
       {children}
     </label>
+  );
+}
+
+function UploadControl({
+  id,
+  label,
+  accept,
+  media,
+  uploading,
+  onUpload
+}: {
+  id: string;
+  label: string;
+  accept: string;
+  media: UploadedMedia[];
+  uploading: boolean;
+  onUpload: (file: File) => void;
+}) {
+  const item = media[0];
+  return (
+    <div className="upload-box">
+      <div className="upload-head">
+        <span>{label}</span>
+        <label className="secondary-button upload-button" htmlFor={id}>
+          {uploading ? <Loader2 className="spin" size={16} /> : <UploadCloud size={16} />}
+          {uploading ? 'Mengunggah...' : 'Pilih File'}
+        </label>
+        <input
+          id={id}
+          className="upload-input"
+          type="file"
+          accept={accept}
+          disabled={uploading}
+          onChange={(event) => {
+            const file = event.currentTarget.files?.[0];
+            if (file) onUpload(file);
+            event.currentTarget.value = '';
+          }}
+        />
+      </div>
+      {item ? (
+        <div className="upload-preview">
+          {item.type === 'VIDEO' ? (
+            <video src={item.url} controls muted />
+          ) : item.type === 'IMAGE' ? (
+            <div className="image-preview" role="img" aria-label={label} style={{ backgroundImage: `url(${item.url})` }} />
+          ) : (
+            <div className="document-preview"><FileText size={28} /></div>
+          )}
+          <div>
+            <b>{item.type === 'VIDEO' ? 'Video siap dipakai' : item.type === 'IMAGE' ? 'Gambar siap dipakai' : 'Dokumen siap dipakai'}</b>
+            <small>{item.url}</small>
+          </div>
+        </div>
+      ) : (
+        <div className="upload-empty">
+          {accept.includes('video') ? <Video size={20} /> : <ImageIcon size={20} />}
+          <span>Upload file dari komputer, sistem akan membuat URL otomatis.</span>
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -24,11 +24,15 @@ services:
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://tolong:change-this-postgres-password@postgres:5432/tolong?schema=public}
       PORT: 3001
+      UPLOAD_DIR: ${UPLOAD_DIR:-/app/uploads}
+      PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-https://dokploy.closeclaw.site/tolong-api/v1}
     depends_on:
       postgres:
         condition: service_healthy
     ports:
       - "3001:3001"
+    volumes:
+      - uploads_data:/app/uploads
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3001/v1/health >/dev/null 2>&1 || exit 1"]
       interval: 15s
@@ -55,3 +59,4 @@ services:
 
 volumes:
   postgres_data:
+  uploads_data:

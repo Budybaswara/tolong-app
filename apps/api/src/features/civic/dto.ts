@@ -1,4 +1,5 @@
 import { AssistanceStatus, JobApplicationStatus, MediaType, Priority, ReportStatus } from '@prisma/client';
+import { Type } from 'class-transformer';
 import {
   IsArray,
   IsBoolean,
@@ -12,8 +13,27 @@ import {
   IsUrl,
   MaxLength,
   Min,
-  MinLength
+  MinLength,
+  ValidateNested
 } from 'class-validator';
+
+export class UploadedMediaDto {
+  @IsUrl()
+  url!: string;
+
+  @IsString()
+  path!: string;
+
+  @IsEnum(MediaType)
+  type!: MediaType;
+
+  @IsString()
+  mimeType!: string;
+
+  @IsInt()
+  @Min(1)
+  sizeBytes!: number;
+}
 
 export class CreateReportDto {
   @IsString()
@@ -53,6 +73,12 @@ export class CreateReportDto {
   @IsOptional()
   @IsString()
   userId?: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UploadedMediaDto)
+  media?: UploadedMediaDto[];
 }
 
 export class UpdateReportStatusDto {
@@ -122,6 +148,12 @@ export class CreateProductDto {
 
   @IsString()
   categoryId!: string;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UploadedMediaDto)
+  media?: UploadedMediaDto[];
 }
 
 export class ApplyJobDto {
@@ -232,6 +264,12 @@ export class CreateArticleDto {
   @IsOptional()
   @IsBoolean()
   featured?: boolean;
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => UploadedMediaDto)
+  media?: UploadedMediaDto[];
 }
 
 export class CreateBannerDto {

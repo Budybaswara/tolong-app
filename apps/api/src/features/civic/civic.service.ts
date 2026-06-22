@@ -72,21 +72,23 @@ export class CivicService {
 
   async createReport(body: CreateReportDto) {
     const userId = body.userId ?? (await this.ensureGuestUser()).id;
+    const { media, ...report } = body;
     return this.prisma.report.create({
       data: {
         code: this.code('MSJ'),
-        title: body.title,
-        description: body.description,
+        title: report.title,
+        description: report.description,
         status: 'SUBMITTED',
-        priority: body.priority ?? 'MEDIUM',
-        district: body.district,
-        village: body.village,
-        latitude: body.latitude,
-        longitude: body.longitude,
-        address: body.address,
+        priority: report.priority ?? 'MEDIUM',
+        district: report.district,
+        village: report.village,
+        latitude: report.latitude,
+        longitude: report.longitude,
+        address: report.address,
         userId,
-        categoryId: body.categoryId,
-        timeline: { create: { status: 'SUBMITTED', note: 'Aspirasi diterima oleh sistem TOLONG' } }
+        categoryId: report.categoryId,
+        timeline: { create: { status: 'SUBMITTED', note: 'Aspirasi diterima oleh sistem TOLONG' } },
+        media: media?.length ? { create: media } : undefined
       },
       include: { category: true, timeline: true, media: true }
     });

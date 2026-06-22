@@ -774,6 +774,94 @@ td small {
   box-shadow: 0 0 0 3px rgba(183, 0, 12, .1);
 }
 
+.upload-box {
+  display: grid;
+  gap: 10px;
+  border: 1px dashed #f3b4ba;
+  border-radius: 14px;
+  background: #fffafa;
+  padding: 12px;
+}
+
+.upload-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.upload-head > span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.upload-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.upload-input {
+  display: none;
+}
+
+.upload-empty,
+.upload-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+}
+
+.upload-empty {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.upload-empty svg {
+  color: var(--primary);
+}
+
+.image-preview,
+.upload-preview video,
+.document-preview {
+  height: 78px;
+  width: 108px;
+  flex: 0 0 108px;
+  border-radius: 10px;
+  background: #111827;
+  object-fit: cover;
+}
+
+.image-preview {
+  background-position: center;
+  background-size: cover;
+}
+
+.document-preview {
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+
+.upload-preview b,
+.upload-preview small {
+  display: block;
+}
+
+.upload-preview small {
+  max-width: 100%;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .drawer-actions {
   display: flex;
   justify-content: flex-end;

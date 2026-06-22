@@ -121,17 +121,47 @@ export class AdminService {
 
   async bootstrapDefaults() {
     const defaults: CreateCategoryDto[] = [
-      { module: 'REPORT', name: 'Infrastruktur', icon: 'construction', color: '#b7000c' },
+      { module: 'REPORT', name: 'Infrastruktur Jalan dan Jembatan', icon: 'construction', color: '#b7000c' },
       { module: 'REPORT', name: 'Kesehatan', icon: 'local_hospital', color: '#004ed0' },
+      { module: 'REPORT', name: 'Pendidikan', icon: 'school', color: '#16a34a' },
+      { module: 'REPORT', name: 'Pertanian dan Perkebunan', icon: 'agriculture', color: '#15803d' },
+      { module: 'REPORT', name: 'UMKM dan Ekonomi', icon: 'storefront', color: '#f97316' },
+      { module: 'REPORT', name: 'Sosial dan Bantuan', icon: 'volunteer_activism', color: '#7c3aed' },
+      { module: 'REPORT', name: 'Keamanan dan Ketertiban', icon: 'security', color: '#111827' },
+      { module: 'REPORT', name: 'Lingkungan dan Sampah', icon: 'eco', color: '#0f766e' },
+      { module: 'REPORT', name: 'Administrasi Publik', icon: 'assignment', color: '#004ed0' },
+      { module: 'REPORT', name: 'Listrik Air dan Internet', icon: 'bolt', color: '#f59e0b' },
+      { module: 'REPORT', name: 'Pemuda dan Olahraga', icon: 'sports_soccer', color: '#dc2626' },
+      { module: 'REPORT', name: 'Perempuan dan Anak', icon: 'family_restroom', color: '#db2777' },
       { module: 'EMERGENCY', name: 'Ambulance', icon: 'ambulance', color: '#004ed0' },
       { module: 'EMERGENCY', name: 'Pemadam', icon: 'fire_truck', color: '#b7000c' },
+      { module: 'EMERGENCY', name: 'Keamanan', icon: 'local_police', color: '#111827' },
+      { module: 'EMERGENCY', name: 'Bencana', icon: 'flood', color: '#f97316' },
+      { module: 'EMERGENCY', name: 'Kecelakaan', icon: 'car_crash', color: '#b7000c' },
+      { module: 'EMERGENCY', name: 'Kesehatan Darurat', icon: 'emergency', color: '#004ed0' },
       { module: 'PRODUCT', name: 'Kuliner', icon: 'restaurant', color: '#e60012' },
       { module: 'PRODUCT', name: 'Kerajinan', icon: 'brush', color: '#004ed0' },
+      { module: 'PRODUCT', name: 'Pertanian', icon: 'agriculture', color: '#15803d' },
+      { module: 'PRODUCT', name: 'Fashion', icon: 'checkroom', color: '#db2777' },
+      { module: 'PRODUCT', name: 'Jasa', icon: 'handyman', color: '#7c3aed' },
+      { module: 'PRODUCT', name: 'Perikanan dan Peternakan', icon: 'set_meal', color: '#0f766e' },
       { module: 'NEWS', name: 'Ekonomi', icon: 'storefront', color: '#004ed0' },
       { module: 'NEWS', name: 'Kegiatan DPD', icon: 'campaign', color: '#b7000c' },
+      { module: 'NEWS', name: 'Aspirasi Warga', icon: 'record_voice_over', color: '#16a34a' },
+      { module: 'NEWS', name: 'Program Bantuan', icon: 'volunteer_activism', color: '#7c3aed' },
+      { module: 'NEWS', name: 'UMKM', icon: 'storefront', color: '#f97316' },
+      { module: 'NEWS', name: 'Lowongan', icon: 'work', color: '#004ed0' },
+      { module: 'NEWS', name: 'Pengumuman', icon: 'campaign', color: '#111827' },
       { module: 'ASSISTANCE', name: 'Pendidikan', icon: 'school', color: '#004ed0' },
       { module: 'ASSISTANCE', name: 'UMKM', icon: 'storefront', color: '#b7000c' },
-      { module: 'JOB', name: 'Administrasi', icon: 'work', color: '#004ed0' }
+      { module: 'ASSISTANCE', name: 'Kesehatan', icon: 'local_hospital', color: '#16a34a' },
+      { module: 'ASSISTANCE', name: 'Sosial', icon: 'diversity_3', color: '#7c3aed' },
+      { module: 'ASSISTANCE', name: 'Pertanian', icon: 'agriculture', color: '#15803d' },
+      { module: 'JOB', name: 'Administrasi', icon: 'work', color: '#004ed0' },
+      { module: 'JOB', name: 'Lapangan', icon: 'engineering', color: '#b7000c' },
+      { module: 'JOB', name: 'Kesehatan', icon: 'local_hospital', color: '#16a34a' },
+      { module: 'JOB', name: 'Pendidikan', icon: 'school', color: '#7c3aed' },
+      { module: 'JOB', name: 'UMKM', icon: 'storefront', color: '#f97316' }
     ];
     const categories = await Promise.all(defaults.map((item) => this.createCategory(item)));
     return { categories, count: categories.length };
@@ -161,7 +191,14 @@ export class AdminService {
   }
 
   createProduct(body: CreateProductDto) {
-    return this.prisma.product.create({ data: body, include: { category: true } });
+    const { media, ...product } = body;
+    return this.prisma.product.create({
+      data: {
+        ...product,
+        media: media?.length ? { create: media } : undefined
+      },
+      include: { category: true, media: true }
+    });
   }
 
   createJob(body: CreateJobPostingDto) {
@@ -173,9 +210,14 @@ export class AdminService {
   }
 
   createArticle(body: CreateArticleDto) {
+    const { media, ...article } = body;
     return this.prisma.article.create({
-      data: { ...body, publishedAt: new Date() },
-      include: { category: true }
+      data: {
+        ...article,
+        publishedAt: new Date(),
+        media: media?.length ? { create: media } : undefined
+      },
+      include: { category: true, media: true }
     });
   }
 
