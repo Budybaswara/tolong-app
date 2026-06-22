@@ -212,6 +212,13 @@ export class CivicService {
     });
   }
 
+  article(slug: string) {
+    return this.prisma.article.findUniqueOrThrow({
+      where: { slug },
+      include: { category: true, media: true }
+    });
+  }
+
   mapReports(filter: { categoryId?: string; status?: ReportStatus }) {
     return this.prisma.report.findMany({
       where: {

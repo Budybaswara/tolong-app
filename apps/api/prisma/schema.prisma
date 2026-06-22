@@ -251,6 +251,9 @@ model Article {
   content     String
   featured    Boolean      @default(false)
   publishedAt DateTime?
+  authorName  String?
+  sourceName  String?
+  sourceUrl   String?
   categoryId  String
   category    Category     @relation(fields: [categoryId], references: [id])
   authorId    String?

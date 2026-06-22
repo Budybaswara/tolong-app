@@ -258,6 +258,18 @@ export class CreateArticleDto {
   @IsString()
   content!: string;
 
+  @IsOptional()
+  @IsString()
+  authorName?: string;
+
+  @IsOptional()
+  @IsString()
+  sourceName?: string;
+
+  @IsOptional()
+  @IsUrl()
+  sourceUrl?: string;
+
   @IsString()
   categoryId!: string;
 

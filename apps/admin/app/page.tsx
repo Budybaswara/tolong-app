@@ -142,6 +142,9 @@ const initialForms = {
     title: '',
     excerpt: '',
     content: '',
+    authorName: 'Admin TOLONG',
+    sourceName: 'DPD PSI Mesuji',
+    sourceUrl: '',
     categoryId: '',
     featured: true,
     media: [] as UploadedMedia[]
@@ -367,7 +370,12 @@ export default function Dashboard() {
   async function publishNews() {
     setSaving(true);
     try {
-      await requestJson(`${adminApiBase}/news`, 'POST', forms.news);
+      await requestJson(`${adminApiBase}/news`, 'POST', {
+        ...forms.news,
+        authorName: forms.news.authorName.trim() || undefined,
+        sourceName: forms.news.sourceName.trim() || undefined,
+        sourceUrl: forms.news.sourceUrl.trim() || undefined
+      });
       setForms((current) => ({ ...current, news: initialForms.news }));
       setNotice('Berita berhasil dipublikasikan ke aplikasi.');
       await load();
@@ -633,6 +641,17 @@ export default function Dashboard() {
               </FormField>
               <FormField label="Kategori Berita">
                 <CategorySelect value={forms.news.categoryId} categories={categoryOptions('NEWS')} onChange={(value) => updateForm('news', { categoryId: value })} />
+              </FormField>
+              <div className="form-grid two">
+                <FormField label="Penulis Berita">
+                  <input value={forms.news.authorName} onChange={(event) => updateForm('news', { authorName: event.target.value })} />
+                </FormField>
+                <FormField label="Nama Sumber">
+                  <input value={forms.news.sourceName} onChange={(event) => updateForm('news', { sourceName: event.target.value })} />
+                </FormField>
+              </div>
+              <FormField label="URL Sumber, opsional">
+                <input value={forms.news.sourceUrl} onChange={(event) => updateForm('news', { sourceUrl: event.target.value })} placeholder="https://..." />
               </FormField>
               <UploadControl
                 id="news-media"

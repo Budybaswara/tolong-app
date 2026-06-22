@@ -105,6 +105,11 @@ export class CivicController {
     return this.civic.news(featured === 'true');
   }
 
+  @Get('news/:slug')
+  article(@Param('slug') slug: string) {
+    return this.civic.article(slug);
+  }
+
   @Get('map/live-reports')
   map(@Query('categoryId') categoryId?: string, @Query('status') status?: ReportStatus) {
     return this.civic.mapReports({ categoryId, status });
