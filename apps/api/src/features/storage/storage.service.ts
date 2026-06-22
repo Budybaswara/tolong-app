@@ -51,7 +51,11 @@ export class StorageService {
     const pathParts = path.split('/');
     await mkdir(join(uploadRoot, ...pathParts.slice(0, -1)), { recursive: true });
     await writeFile(absolutePath, buffer);
-    const apiBase = this.config.get<string>('PUBLIC_API_BASE_URL', `http://localhost:${this.config.get<number>('PORT', 3001)}/v1`);
+    const defaultApiBase =
+      this.config.get<string>('NODE_ENV') === 'production'
+        ? 'https://dokploy.closeclaw.site/tolong-api/v1'
+        : `http://localhost:${this.config.get<number>('PORT', 3001)}/v1`;
+    const apiBase = this.config.get<string>('PUBLIC_API_BASE_URL', defaultApiBase);
     const publicUrl = `${apiBase.replace(/\/$/, '')}/uploads/${path}`;
     return this.response('local', 'local-vps', path, publicUrl, contentType, buffer.length);
   }
