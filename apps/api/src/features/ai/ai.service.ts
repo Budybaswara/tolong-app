@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import OpenAI from 'openai';
+import { ChatCompletionMessageParam } from 'openai/resources/chat/completions';
 import { PrismaService } from '../../core/prisma/prisma.service';
 
 type ChatInput = { message: string; conversationId?: string; userId?: string };
@@ -65,13 +66,24 @@ export class AiService {
 
   private async askOpenAi(messages: Array<{ role: string; content: string }>) {
     if (!this.openai) throw new ServiceUnavailableException('OpenAI belum dikonfigurasi');
-    const response = await this.openai.responses.create({
+    const chatMessages: ChatCompletionMessageParam[] = [
+      {
+        role: 'system',
+        content:
+          'Anda adalah AI TOLONG untuk DPD PSI Mesuji Lampung. Jawab dalam Bahasa Indonesia, singkat, operasional, aman, dan arahkan warga ke fitur yang tepat.'
+      },
+      ...messages.map(
+        (message): ChatCompletionMessageParam => ({
+          role: message.role === 'assistant' ? 'assistant' : 'user',
+          content: message.content
+        })
+      )
+    ];
+    const response = await this.openai.chat.completions.create({
       model: this.config.get('OPENAI_MODEL', 'gpt-5.5'),
-      instructions:
-        'Anda adalah AI TOLONG untuk DPD PSI Mesuji Lampung. Jawab dalam Bahasa Indonesia, singkat, operasional, aman, dan arahkan warga ke fitur yang tepat.',
-      input: messages.map((message) => `${message.role}: ${message.content}`).join('\n')
+      messages: chatMessages
     });
-    return response.output_text;
+    return response.choices[0]?.message?.content ?? 'Tidak ada jawaban AI.';
   }
 
   private async askGemini(message: string, model: string) {
