@@ -12,7 +12,7 @@ export function adminApiUrl(path: string, search = '') {
 export function upstreamHeaders(json = false) {
   const headers: Record<string, string> = {
     Accept: 'application/json',
-    'x-api-internal-token': process.env.API_INTERNAL_TOKEN ?? '',
+    'x-api-internal-token': process.env.API_INTERNAL_TOKEN ?? 'change-this-internal-api-token',
     'x-admin-actor': process.env.ADMIN_ACTOR_NAME ?? 'Admin Dashboard'
   };
   if (json) headers['Content-Type'] = 'application/json';
