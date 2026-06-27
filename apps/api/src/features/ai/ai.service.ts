@@ -81,6 +81,7 @@ export class AiService {
     ];
     const response = await this.openai.chat.completions.create({
       model: this.config.get('OPENAI_MODEL', 'gpt-5.5'),
+      max_tokens: Number(this.config.get('OPENAI_MAX_TOKENS', 512)),
       messages: chatMessages
     });
     return response.choices[0]?.message?.content ?? 'Tidak ada jawaban AI.';
