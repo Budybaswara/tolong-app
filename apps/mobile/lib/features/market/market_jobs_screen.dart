@@ -25,7 +25,9 @@ class _MarketJobsScreenState extends State<MarketJobsScreen> {
 
   void _search(String query) {
     setState(() {
-      products = repository.products(query: query.trim().isEmpty ? null : query.trim());
+      products = repository.products(
+        query: query.trim().isEmpty ? null : query.trim(),
+      );
     });
   }
 
@@ -37,36 +39,61 @@ class _MarketJobsScreenState extends State<MarketJobsScreen> {
         future: products,
         builder: (context, snapshot) {
           final items = snapshot.data ?? <dynamic>[];
-          return ListView(
-            padding: const EdgeInsets.all(20),
+          return AppScrollPage(
             children: [
-              const SectionTitle('TOLONG UMKM'),
-              const SizedBox(height: 12),
-              TextField(
-                controller: searchController,
-                onSubmitted: _search,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: 'Cari produk lokal Mesuji...',
-                  suffixIcon: IconButton(
-                    onPressed: () => _search(searchController.text),
-                    icon: const Icon(Icons.arrow_forward),
+              const FeatureHeader(
+                eyebrow: 'UMKM Marketplace',
+                title: 'Belanja produk lokal Mesuji',
+                subtitle:
+                    'Cari produk warga, hubungi penjual langsung lewat WhatsApp.',
+                icon: Icons.storefront,
+                gradient: [warning, primary],
+              ),
+              const SizedBox(height: 16),
+              GlassCard(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
+                child: TextField(
+                  controller: searchController,
+                  onSubmitted: _search,
+                  decoration: InputDecoration(
+                    prefixIcon: const Icon(Icons.search),
+                    hintText: 'Cari produk lokal Mesuji...',
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    filled: false,
+                    suffixIcon: IconButton(
+                      onPressed: () => _search(searchController.text),
+                      icon: const Icon(Icons.arrow_forward),
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
-              if (snapshot.connectionState == ConnectionState.waiting) const LinearProgressIndicator(),
-              if (items.isEmpty && snapshot.connectionState != ConnectionState.waiting)
-                const GlassCard(child: Text('Produk UMKM akan tampil setelah admin menambahkan data.')),
-              if (items.isNotEmpty)
+              const SizedBox(height: 14),
+              if (snapshot.connectionState == ConnectionState.waiting)
+                const LinearProgressIndicator(),
+              if (items.isEmpty &&
+                  snapshot.connectionState != ConnectionState.waiting)
+                const EmptyStateCard(
+                  icon: Icons.storefront,
+                  title: 'Produk belum tersedia',
+                  body:
+                      'Produk UMKM akan tampil setelah admin menambahkan data.',
+                )
+              else
                 GridView.count(
                   crossAxisCount: 2,
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  childAspectRatio: .68,
+                  childAspectRatio: .66,
                   crossAxisSpacing: 12,
                   mainAxisSpacing: 12,
-                  children: items.map((raw) => _ProductCard(product: _map(raw))).toList(),
+                  children: items
+                      .map((raw) => _ProductCard(product: _map(raw)))
+                      .toList(),
                 ),
             ],
           );
@@ -75,7 +102,8 @@ class _MarketJobsScreenState extends State<MarketJobsScreen> {
     );
   }
 
-  Map<String, dynamic> _map(Object? value) => value is Map<String, dynamic> ? value : <String, dynamic>{};
+  Map<String, dynamic> _map(Object? value) =>
+      value is Map<String, dynamic> ? value : <String, dynamic>{};
 }
 
 class _ProductCard extends StatelessWidget {
@@ -89,8 +117,12 @@ class _ProductCard extends StatelessWidget {
     final seller = product['sellerName']?.toString() ?? 'Penjual lokal';
     final whatsapp = product['whatsapp']?.toString();
     final price = product['price'];
-    final media = product['media'] is List ? product['media'] as List : const [];
-    final imageUrl = media.isNotEmpty && media.first is Map ? (media.first as Map)['url']?.toString() : null;
+    final media = product['media'] is List
+        ? product['media'] as List
+        : const [];
+    final imageUrl = media.isNotEmpty && media.first is Map
+        ? (media.first as Map)['url']?.toString()
+        : null;
 
     return GlassCard(
       padding: EdgeInsets.zero,
@@ -100,11 +132,20 @@ class _ProductCard extends StatelessWidget {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: surfaceContainer,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                gradient: imageUrl == null || imageUrl.isEmpty
+                    ? const LinearGradient(
+                        colors: [Color(0xFFFFF1F2), Color(0xFFEAF0FF)],
+                      )
+                    : null,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(22),
+                ),
                 image: imageUrl == null || imageUrl.isEmpty
                     ? null
-                    : DecorationImage(image: NetworkImage(imageUrl), fit: BoxFit.cover),
+                    : DecorationImage(
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                      ),
               ),
               child: imageUrl == null || imageUrl.isEmpty
                   ? const Icon(Icons.storefront, size: 54, color: primary)
@@ -120,23 +161,35 @@ class _ProductCard extends StatelessWidget {
                   name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontWeight: FontWeight.w800),
+                  style: const TextStyle(fontWeight: FontWeight.w900),
                 ),
                 Text(
                   seller,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(fontSize: 12),
+                  style: const TextStyle(fontSize: 12, color: muted),
                 ),
+                const SizedBox(height: 4),
                 Text(
-                  price == null ? 'Harga hubungi penjual' : 'Rp $price',
-                  style: const TextStyle(color: primary, fontWeight: FontWeight.w700),
+                  price == null ? 'Hubungi penjual' : 'Rp $price',
+                  style: const TextStyle(
+                    color: primary,
+                    fontWeight: FontWeight.w900,
+                  ),
                 ),
-                FilledButton(
-                  onPressed: whatsapp == null || whatsapp.isEmpty
-                      ? null
-                      : () => launchUrl(Uri.parse('https://wa.me/${_normalizeWa(whatsapp)}')),
-                  child: const Text('Pesan via WA'),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: whatsapp == null || whatsapp.isEmpty
+                        ? null
+                        : () => launchUrl(
+                            Uri.parse(
+                              'https://wa.me/${_normalizeWa(whatsapp)}',
+                            ),
+                          ),
+                    child: const Text('Pesan WA'),
+                  ),
                 ),
               ],
             ),

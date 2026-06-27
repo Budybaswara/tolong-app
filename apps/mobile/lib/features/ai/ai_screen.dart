@@ -16,14 +16,15 @@ class _AiScreenState extends State<AiScreen> {
   final controller = TextEditingController();
   final messages = <_ChatMessage>[
     const _ChatMessage(
-      text: 'Halo! Saya AI TOLONG. Ada yang bisa saya bantu terkait layanan publik di Kabupaten Mesuji hari ini?',
+      text:
+          'Halo! Saya AI TOLONG. Pilih prompt cepat atau tulis pertanyaan layanan publik Mesuji.',
       user: false,
     ),
   ];
   List<String> prompts = const [
     'Bagaimana cara lapor jalan rusak?',
     'Bantuan UMKM apa yang tersedia?',
-    'Update berita Mesuji hari ini',
+    'Ringkas berita Mesuji hari ini',
   ];
   String? conversationId;
   bool sending = false;
@@ -45,19 +46,32 @@ class _AiScreenState extends State<AiScreen> {
     });
 
     try {
-      final response = await repository.sendAiMessage(message: text, conversationId: conversationId);
+      final response = await repository.sendAiMessage(
+        message: text,
+        conversationId: conversationId,
+      );
       if (!mounted) return;
       setState(() {
         conversationId = response['conversationId']?.toString();
-        messages.add(_ChatMessage(text: response['answer']?.toString() ?? 'AI belum memberikan jawaban.', user: false));
-        prompts = (response['suggestedPrompts'] as List<dynamic>? ?? prompts).map((value) => value.toString()).toList();
+        messages.add(
+          _ChatMessage(
+            text:
+                response['answer']?.toString() ??
+                'AI belum memberikan jawaban.',
+            user: false,
+          ),
+        );
+        prompts = (response['suggestedPrompts'] as List<dynamic>? ?? prompts)
+            .map((value) => value.toString())
+            .toList();
       });
-    } catch (error) {
+    } catch (_) {
       if (!mounted) return;
       setState(() {
         messages.add(
-          _ChatMessage(
-            text: 'AI belum aktif atau provider belum dikonfigurasi. Pesan Anda tetap bisa dijadikan aspirasi melalui menu Aspirasi.',
+          const _ChatMessage(
+            text:
+                'AI belum aktif atau provider belum dikonfigurasi. Pertanyaan ini tetap bisa Anda jadikan aspirasi melalui menu Aspirasi.',
             user: false,
           ),
         );
@@ -71,49 +85,88 @@ class _AiScreenState extends State<AiScreen> {
   Widget build(BuildContext context) {
     return Shell(
       index: 2,
-      child: Column(
+      child: Stack(
         children: [
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(20),
-              children: [
-                const SectionTitle('AI TOLONG Assistant'),
-                const SizedBox(height: 12),
-                ...messages.map((message) => _Bubble(message: message)),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: prompts
-                      .map((prompt) => ActionChip(label: Text(prompt), onPressed: sending ? null : () => _send(prompt)))
-                      .toList(),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                IconButton(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Voice input akan diaktifkan setelah permission flow selesai.')),
-                    );
-                  },
-                  icon: const Icon(Icons.mic),
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: controller,
-                    onSubmitted: (_) => _send(),
-                    decoration: const InputDecoration(hintText: 'Tulis pesan Anda...'),
+          AppScrollPage(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 156),
+            children: [
+              const FeatureHeader(
+                eyebrow: 'AI Assistant',
+                title: 'Tanya TOLONG AI',
+                subtitle:
+                    'GPT menjawab lebih dulu, Gemini menjadi fallback saat provider utama belum siap.',
+                icon: Icons.auto_awesome,
+                gradient: [Color(0xFF7C3AED), Color(0xFF1D4ED8)],
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: prompts
+                    .map(
+                      (prompt) => ActionChip(
+                        label: Text(prompt),
+                        onPressed: sending ? null : () => _send(prompt),
+                      ),
+                    )
+                    .toList(),
+              ),
+              const SizedBox(height: 16),
+              ...messages.map((message) => _Bubble(message: message)),
+              if (sending)
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: StatusPill(
+                    label: 'AI sedang mengetik...',
+                    icon: Icons.more_horiz,
+                    color: tertiary,
                   ),
                 ),
-                IconButton(
-                  onPressed: sending ? null : () => _send(),
-                  icon: Icon(Icons.send, color: sending ? Colors.grey : primary),
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SafeArea(
+              child: GlassCard(
+                margin: const EdgeInsets.fromLTRB(16, 0, 16, 88),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 8,
                 ),
-              ],
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Voice input akan diaktifkan setelah permission flow selesai.',
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.mic, color: primary),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: controller,
+                        onSubmitted: (_) => _send(),
+                        decoration: const InputDecoration(
+                          hintText: 'Tulis pesan Anda...',
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          filled: false,
+                        ),
+                      ),
+                    ),
+                    IconButton.filled(
+                      onPressed: sending ? null : () => _send(),
+                      icon: const Icon(Icons.send),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -140,13 +193,34 @@ class _Bubble extends StatelessWidget {
       alignment: message.user ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        padding: const EdgeInsets.all(12),
-        constraints: const BoxConstraints(maxWidth: 320),
+        padding: const EdgeInsets.all(14),
+        constraints: const BoxConstraints(maxWidth: 330),
         decoration: BoxDecoration(
-          color: message.user ? primary : surfaceContainer,
-          borderRadius: BorderRadius.circular(16),
+          gradient: message.user
+              ? const LinearGradient(colors: redGradient)
+              : null,
+          color: message.user ? null : Colors.white,
+          borderRadius: BorderRadius.only(
+            topLeft: const Radius.circular(20),
+            topRight: const Radius.circular(20),
+            bottomLeft: Radius.circular(message.user ? 20 : 6),
+            bottomRight: Radius.circular(message.user ? 6 : 20),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: .06),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
-        child: Text(message.text, style: TextStyle(color: message.user ? Colors.white : onSurface)),
+        child: Text(
+          message.text,
+          style: TextStyle(
+            color: message.user ? Colors.white : onSurface,
+            height: 1.4,
+          ),
+        ),
       ),
     );
   }

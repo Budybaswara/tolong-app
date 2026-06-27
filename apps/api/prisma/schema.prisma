@@ -77,11 +77,13 @@ model User {
   refreshTokenHash           String?
   fcmTokens                  FcmToken[]
   reports                    Report[]
+  assignedReports            Report[]                @relation("AssignedReports")
   emergencies                EmergencyRequest[]
   assistanceApplications     AssistanceApplication[]
   jobApplications            JobApplication[]
   membership                 MembershipCard?
   notifications              Notification[]
+  auditLogs                  AuditLog[]
   createdAt                  DateTime                @default(now())
   updatedAt                  DateTime                @updatedAt
 }
@@ -140,6 +142,10 @@ model Report {
   village     String?
   userId      String
   user        User             @relation(fields: [userId], references: [id])
+  assignedToId String?
+  assignedTo   User?           @relation("AssignedReports", fields: [assignedToId], references: [id])
+  dueAt       DateTime?
+  resolvedAt  DateTime?
   categoryId  String
   category    Category         @relation(fields: [categoryId], references: [id])
   media       MediaAsset[]
@@ -169,8 +175,24 @@ model EmergencyRequest {
   category   Category     @relation(fields: [categoryId], references: [id])
   userId     String?
   user       User?        @relation(fields: [userId], references: [id])
+  assignedToId String?
+  dueAt      DateTime?
+  resolvedAt DateTime?
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
+}
+
+model EmergencyContact {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  category  String
+  district  String?
+  village   String?
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model AssistanceProgram {
@@ -311,4 +333,17 @@ model Notification {
   userId    String?
   user      User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt DateTime         @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  actorName String?
+  action    String
+  entity    String
+  entityId  String?
+  metadata  Json?
+  ipAddress String?
+  createdAt DateTime @default(now())
 }

@@ -45,6 +45,15 @@ final router = GoRouter(
       path: '/profile',
       builder: (context, state) => const ProfileNewsScreen(),
     ),
+    GoRoute(
+      path: '/news/:slug',
+      builder: (context, state) => NewsDetailScreen(
+        slug: state.pathParameters['slug'] ?? '',
+        initialArticle: state.extra is Map<String, dynamic>
+            ? state.extra as Map<String, dynamic>
+            : null,
+      ),
+    ),
   ],
 );
 

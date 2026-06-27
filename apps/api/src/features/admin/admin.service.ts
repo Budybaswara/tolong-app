@@ -2,14 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { AssistanceStatus, JobApplicationStatus, Prisma, Role, ReportStatus } from '@prisma/client';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import {
+  AssignReportDto,
   CreateArticleDto,
   CreateAssistanceProgramDto,
   CreateBannerDto,
   CreateCategoryDto,
+  CreateEmergencyContactDto,
   CreateJobPostingDto,
   CreateProductDto,
   UpdateReportStatusDto
 } from '../civic/dto';
+
+type AdminActor = { actorName?: string; ipAddress?: string };
 
 @Injectable()
 export class AdminService {
@@ -92,6 +96,21 @@ export class AdminService {
     });
   }
 
+  auditLogs() {
+    return this.prisma.auditLog.findMany({
+      take: 100,
+      orderBy: { createdAt: 'desc' },
+      include: { actor: true }
+    });
+  }
+
+  emergencyContacts() {
+    return this.prisma.emergencyContact.findMany({
+      where: { active: true },
+      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }]
+    });
+  }
+
   categories(module?: string) {
     return this.prisma.category.findMany({
       where: module ? { module } : undefined,
@@ -99,9 +118,9 @@ export class AdminService {
     });
   }
 
-  createCategory(body: CreateCategoryDto) {
+  async createCategory(body: CreateCategoryDto, actor?: AdminActor) {
     const id = `${body.module}-${body.name}`;
-    return this.prisma.category.upsert({
+    const category = await this.prisma.category.upsert({
       where: { id },
       update: {
         module: body.module,
@@ -117,9 +136,11 @@ export class AdminService {
         color: body.color
       }
     });
+    await this.audit('CATEGORY_UPSERT', 'Category', category.id, body, actor);
+    return category;
   }
 
-  async bootstrapDefaults() {
+  async bootstrapDefaults(actor?: AdminActor) {
     const defaults: CreateCategoryDto[] = [
       { module: 'REPORT', name: 'Infrastruktur Jalan dan Jembatan', icon: 'construction', color: '#b7000c' },
       { module: 'REPORT', name: 'Kesehatan', icon: 'local_hospital', color: '#004ed0' },
@@ -163,55 +184,88 @@ export class AdminService {
       { module: 'JOB', name: 'Pendidikan', icon: 'school', color: '#7c3aed' },
       { module: 'JOB', name: 'UMKM', icon: 'storefront', color: '#f97316' }
     ];
-    const categories = await Promise.all(defaults.map((item) => this.createCategory(item)));
+    const categories = await Promise.all(defaults.map((item) => this.createCategory(item, actor)));
+    await this.audit('BOOTSTRAP_DEFAULTS', 'System', 'categories', { count: categories.length }, actor);
     return { categories, count: categories.length };
   }
 
-  updateUserRole(id: string, role: Role) {
-    return this.prisma.user.update({ where: { id }, data: { role } });
+  async updateUserRole(id: string, role: Role, actor?: AdminActor) {
+    const user = await this.prisma.user.update({ where: { id }, data: { role } });
+    await this.audit('USER_ROLE_UPDATE', 'User', id, { role }, actor);
+    return user;
   }
 
-  updateReportStatus(id: string, body: UpdateReportStatusDto) {
-    return this.prisma.report.update({
+  async updateReportStatus(id: string, body: UpdateReportStatusDto, actor?: AdminActor) {
+    const report = await this.prisma.report.update({
       where: { id },
       data: {
         status: body.status,
-        timeline: { create: { status: body.status, note: body.note ?? `Status diubah ke ${body.status}` } }
+        resolvedAt: body.status === 'RESOLVED' ? new Date() : undefined,
+        timeline: { create: { status: body.status, note: body.note ?? `Status diubah ke ${body.status}`, actorId: body.actorId } }
       },
-      include: { category: true, user: true, timeline: true }
+      include: { category: true, user: true, assignedTo: true, timeline: true, media: true }
     });
+    await this.audit('REPORT_STATUS_UPDATE', 'Report', id, body, actor);
+    return report;
   }
 
-  createAssistance(body: CreateAssistanceProgramDto) {
-    return this.prisma.assistanceProgram.create({ data: body, include: { category: true } });
+  async assignReport(id: string, body: AssignReportDto, actor?: AdminActor) {
+    const dueAt = body.dueAt ? new Date(body.dueAt) : this.defaultDueAt();
+    const report = await this.prisma.report.update({
+      where: { id },
+      data: {
+        assignedToId: body.assignedToId,
+        dueAt,
+        status: 'IN_PROGRESS',
+        timeline: {
+          create: {
+            status: 'IN_PROGRESS',
+            note: body.note ?? 'Laporan ditugaskan ke operator.'
+          }
+        }
+      },
+      include: { category: true, user: true, assignedTo: true, timeline: true, media: true }
+    });
+    await this.audit('REPORT_ASSIGN', 'Report', id, body, actor);
+    return report;
+  }
+
+  async createAssistance(body: CreateAssistanceProgramDto, actor?: AdminActor) {
+    const assistance = await this.prisma.assistanceProgram.create({ data: body, include: { category: true } });
+    await this.audit('ASSISTANCE_CREATE', 'AssistanceProgram', assistance.id, body, actor);
+    return assistance;
   }
 
   updateAssistanceStatus(id: string, status: AssistanceStatus) {
     return this.prisma.assistanceApplication.update({ where: { id }, data: { status }, include: { program: true, user: true } });
   }
 
-  createProduct(body: CreateProductDto) {
+  async createProduct(body: CreateProductDto, actor?: AdminActor) {
     const { media, ...product } = body;
-    return this.prisma.product.create({
+    const created = await this.prisma.product.create({
       data: {
         ...product,
         media: media?.length ? { create: media } : undefined
       },
       include: { category: true, media: true }
     });
+    await this.audit('PRODUCT_CREATE', 'Product', created.id, { ...product, mediaCount: media?.length ?? 0 }, actor);
+    return created;
   }
 
-  createJob(body: CreateJobPostingDto) {
-    return this.prisma.jobPosting.create({ data: body });
+  async createJob(body: CreateJobPostingDto, actor?: AdminActor) {
+    const job = await this.prisma.jobPosting.create({ data: body });
+    await this.audit('JOB_CREATE', 'JobPosting', job.id, body, actor);
+    return job;
   }
 
   updateJobApplicationStatus(id: string, status: JobApplicationStatus) {
     return this.prisma.jobApplication.update({ where: { id }, data: { status }, include: { job: true, user: true } });
   }
 
-  createArticle(body: CreateArticleDto) {
+  async createArticle(body: CreateArticleDto, actor?: AdminActor) {
     const { media, ...article } = body;
-    return this.prisma.article.create({
+    const created = await this.prisma.article.create({
       data: {
         ...article,
         publishedAt: new Date(),
@@ -219,13 +273,42 @@ export class AdminService {
       },
       include: { category: true, media: true }
     });
+    await this.audit('ARTICLE_CREATE', 'Article', created.id, { slug: created.slug, mediaCount: media?.length ?? 0 }, actor);
+    return created;
   }
 
-  createBanner(body: CreateBannerDto) {
-    return this.prisma.banner.create({ data: body });
+  async createBanner(body: CreateBannerDto, actor?: AdminActor) {
+    const banner = await this.prisma.banner.create({ data: body });
+    await this.audit('BANNER_CREATE', 'Banner', banner.id, body, actor);
+    return banner;
   }
 
   setBannerActive(id: string, active: boolean) {
     return this.prisma.banner.update({ where: { id }, data: { active } });
+  }
+
+  async createEmergencyContact(body: CreateEmergencyContactDto, actor?: AdminActor) {
+    const contact = await this.prisma.emergencyContact.create({ data: body });
+    await this.audit('EMERGENCY_CONTACT_CREATE', 'EmergencyContact', contact.id, body, actor);
+    return contact;
+  }
+
+  private defaultDueAt() {
+    const value = new Date();
+    value.setHours(value.getHours() + 72);
+    return value;
+  }
+
+  private audit(action: string, entity: string, entityId?: string, metadata?: unknown, actor?: AdminActor) {
+    return this.prisma.auditLog.create({
+      data: {
+        action,
+        entity,
+        entityId,
+        actorName: actor?.actorName ?? 'Admin Dashboard',
+        ipAddress: actor?.ipAddress,
+        metadata: metadata === undefined ? undefined : (JSON.parse(JSON.stringify(metadata)) as Prisma.InputJsonValue)
+      }
+    });
   }
 }

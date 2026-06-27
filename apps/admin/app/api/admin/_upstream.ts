@@ -9,11 +9,21 @@ export function adminApiUrl(path: string, search = '') {
   return apiUrl(`admin/${path}`, search);
 }
 
+export function upstreamHeaders(json = false) {
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'x-api-internal-token': process.env.API_INTERNAL_TOKEN ?? '',
+    'x-admin-actor': process.env.ADMIN_ACTOR_NAME ?? 'Admin Dashboard'
+  };
+  if (json) headers['Content-Type'] = 'application/json';
+  return headers;
+}
+
 export async function proxyGet(path: string, search = '') {
   try {
     const response = await fetch(apiUrl(path, search), {
       cache: 'no-store',
-      headers: { Accept: 'application/json' }
+      headers: path.startsWith('admin/') ? upstreamHeaders() : { Accept: 'application/json' }
     });
     const text = await response.text();
     return new Response(text, {
@@ -41,10 +51,7 @@ export async function proxyJson(path: string, method: 'POST' | 'PATCH', body: un
     const response = await fetch(apiUrl(path), {
       method,
       cache: 'no-store',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json'
-      },
+      headers: path.startsWith('admin/') ? upstreamHeaders(true) : { Accept: 'application/json', 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     });
     const text = await response.text();

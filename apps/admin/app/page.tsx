@@ -75,8 +75,11 @@ type ReportQueueItem = {
   district: string;
   village?: string;
   createdAt: string;
+  dueAt?: string;
+  resolvedAt?: string;
   category: { name: string; color: string };
   user: { displayName: string };
+  assignedTo?: { id: string; displayName: string };
 };
 
 type UserItem = {
@@ -97,6 +100,8 @@ type UploadedMedia = {
   mimeType: string;
   sizeBytes: number;
 };
+type AuditLogItem = { id: string; action: string; entity: string; entityId?: string; actorName?: string; ipAddress?: string; createdAt: string };
+type EmergencyContact = { id: string; name: string; phone: string; category: string; district?: string; village?: string };
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://dokploy.closeclaw.site/tolong-api/v1';
 const adminApiBase = '/api/admin';
@@ -179,6 +184,14 @@ const initialForms = {
   notification: {
     title: '',
     body: ''
+  },
+  emergencyContact: {
+    name: '',
+    phone: '',
+    category: 'Ambulance',
+    district: 'Mesuji',
+    village: '',
+    sortOrder: '1'
   }
 };
 
@@ -188,6 +201,8 @@ export default function Dashboard() {
   const [queue, setQueue] = useState<ReportQueueItem[]>([]);
   const [users, setUsers] = useState<UserItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
+  const [auditLogs, setAuditLogs] = useState<AuditLogItem[]>([]);
+  const [emergencyContacts, setEmergencyContacts] = useState<EmergencyContact[]>([]);
   const [status, setStatus] = useState<ReportStatus>('ALL');
   const [query, setQuery] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -196,6 +211,8 @@ export default function Dashboard() {
   const [selectedReport, setSelectedReport] = useState<ReportQueueItem | null>(null);
   const [nextStatus, setNextStatus] = useState<Exclude<ReportStatus, 'ALL'>>('VERIFIED');
   const [statusNote, setStatusNote] = useState('');
+  const [assignedToId, setAssignedToId] = useState('');
+  const [assignmentNote, setAssignmentNote] = useState('');
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState<Record<string, boolean>>({});
   const [forms, setForms] = useState(initialForms);
@@ -209,14 +226,18 @@ export default function Dashboard() {
         fetch(`${adminApiBase}/analytics`, { cache: 'no-store' }),
         fetch(queueUrl, { cache: 'no-store' }),
         fetch(`${adminApiBase}/categories`, { cache: 'no-store' }),
-        fetch(`${adminApiBase}/users`, { cache: 'no-store' })
+        fetch(`${adminApiBase}/users`, { cache: 'no-store' }),
+        fetch(`${adminApiBase}/audit-logs`, { cache: 'no-store' }),
+        fetch(`${adminApiBase}/emergency-contacts`, { cache: 'no-store' })
       ]);
       if (!responses[0].ok || !responses[1].ok) throw new Error('API admin belum merespons dengan sukses');
-      const [analyticsJson, queueJson, categoryJson, usersJson] = await Promise.all(responses.map((response) => response.json()));
+      const [analyticsJson, queueJson, categoryJson, usersJson, auditJson, contactsJson] = await Promise.all(responses.map((response) => response.json()));
       setAnalytics(analyticsJson as Analytics);
       setQueue(queueJson as ReportQueueItem[]);
       setCategories(Array.isArray(categoryJson) ? (categoryJson as Category[]) : []);
       setUsers(Array.isArray(usersJson) ? (usersJson as UserItem[]) : []);
+      setAuditLogs(Array.isArray(auditJson) ? (auditJson as AuditLogItem[]) : []);
+      setEmergencyContacts(Array.isArray(contactsJson) ? (contactsJson as EmergencyContact[]) : []);
       setState('ready');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal memuat data admin');
@@ -260,6 +281,8 @@ export default function Dashboard() {
     setSelectedReport(report);
     setNextStatus(report.status);
     setStatusNote(defaultStatusNote(report.status));
+    setAssignedToId(report.assignedTo?.id ?? '');
+    setAssignmentNote(report.assignedTo ? `Ditugaskan ke ${report.assignedTo.displayName}` : 'Tugaskan laporan ke operator.');
   }
 
   async function requestJson(path: string, method: 'POST' | 'PATCH', body: unknown) {
@@ -343,6 +366,25 @@ export default function Dashboard() {
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal menyimpan status laporan');
+      setState('error');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function assignReport() {
+    if (!selectedReport || !assignedToId) return;
+    setSaving(true);
+    try {
+      await requestJson(`${adminApiBase}/reports/${selectedReport.id}/assign`, 'PATCH', {
+        assignedToId,
+        note: assignmentNote.trim() || undefined
+      });
+      setNotice(`${selectedReport.code} ditugaskan ke operator.`);
+      setSelectedReport(null);
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal assign laporan');
       setState('error');
     } finally {
       setSaving(false);
@@ -452,6 +494,25 @@ export default function Dashboard() {
       await load();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal mengirim notifikasi');
+      setState('error');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function createEmergencyContact() {
+    setSaving(true);
+    try {
+      await requestJson(`${adminApiBase}/emergency-contacts`, 'POST', {
+        ...forms.emergencyContact,
+        village: forms.emergencyContact.village.trim() || undefined,
+        sortOrder: Number(forms.emergencyContact.sortOrder || 0)
+      });
+      setForms((current) => ({ ...current, emergencyContact: initialForms.emergencyContact }));
+      setNotice('Kontak darurat berhasil ditambahkan.');
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menambahkan kontak darurat');
       setState('error');
     } finally {
       setSaving(false);
@@ -858,16 +919,48 @@ export default function Dashboard() {
             <Card title="Security Runtime" icon={<ShieldCheck />}>
               <div className="metric-list">
                 <Metric label="Auth admin" value="Cookie session aktif" />
+                <Metric label="Admin API" value="Dilindungi x-api-internal-token" />
                 <Metric label="Password admin" value="Dikelola di env ADMIN_ACCESS_CODE Dokploy" />
                 <Metric label="API server" value={apiBase.replace('https://', '')} />
-                <Metric label="RBAC roles" value="Super Admin, Ketua DPD, Operator, DPRD Member" />
+                <Metric label="Audit log" value={`${auditLogs.length} entri terbaru`} />
+              </div>
+            </Card>
+            <FormCard title="Kontak Darurat SOS" icon={<AlertTriangle />}>
+              <FormField label="Nama Kontak/Instansi">
+                <input value={forms.emergencyContact.name} onChange={(event) => updateForm('emergencyContact', { name: event.target.value })} />
+              </FormField>
+              <div className="form-grid two">
+                <FormField label="Nomor Telepon/WhatsApp">
+                  <input value={forms.emergencyContact.phone} onChange={(event) => updateForm('emergencyContact', { phone: event.target.value })} placeholder="628..." />
+                </FormField>
+                <FormField label="Kategori">
+                  <input value={forms.emergencyContact.category} onChange={(event) => updateForm('emergencyContact', { category: event.target.value })} />
+                </FormField>
+              </div>
+              <div className="form-grid two">
+                <FormField label="Wilayah">
+                  <input value={forms.emergencyContact.district} onChange={(event) => updateForm('emergencyContact', { district: event.target.value })} />
+                </FormField>
+                <FormField label="Desa, opsional">
+                  <input value={forms.emergencyContact.village} onChange={(event) => updateForm('emergencyContact', { village: event.target.value })} />
+                </FormField>
+              </div>
+              <button className="primary-button" disabled={saving} onClick={() => void createEmergencyContact()}>Simpan Kontak SOS</button>
+            </FormCard>
+            <Card title="Audit Log Admin" icon={<Activity />}>
+              <div className="metric-list">
+                {auditLogs.slice(0, 8).map((item) => (
+                  <Metric key={item.id} label={`${item.action} - ${item.entity}`} value={formatDate(item.createdAt)} />
+                ))}
+                {auditLogs.length === 0 && <EmptyState text="Belum ada audit log admin." />}
               </div>
             </Card>
             <Card title="Checklist Sebelum Operator Dipakai" icon={<CheckCircle2 />}>
               <div className="recommendation-list">
                 <div className="recommendation"><CheckCircle2 size={18} /><span>Ganti ADMIN_ACCESS_CODE di Dokploy dan redeploy admin.</span></div>
+                <div className="recommendation"><CheckCircle2 size={18} /><span>Ganti API_INTERNAL_TOKEN dengan secret kuat, bukan default compose.</span></div>
                 <div className="recommendation"><CheckCircle2 size={18} /><span>Tambahkan akun user/operator asli melalui Firebase lalu mapping role di menu Users.</span></div>
-                <div className="recommendation"><CheckCircle2 size={18} /><span>Aktifkan audit log admin setelah volume operator mulai bertambah.</span></div>
+                <div className="recommendation"><CheckCircle2 size={18} /><span>Isi kontak darurat resmi per kecamatan/desa.</span></div>
               </div>
             </Card>
           </section>
@@ -889,8 +982,21 @@ export default function Dashboard() {
             <div className="drawer-report">
               <b>{selectedReport.title}</b>
               <span>{selectedReport.category.name} - {selectedReport.district}{selectedReport.village ? `, ${selectedReport.village}` : ''}</span>
+              <span>Operator: {selectedReport.assignedTo?.displayName ?? 'Belum ditugaskan'}</span>
+              {selectedReport.dueAt && <span>SLA: {formatDate(selectedReport.dueAt)}</span>}
               <Badge label={selectedReport.status} />
             </div>
+            <FormField label="Assign operator">
+              <select value={assignedToId} onChange={(event) => setAssignedToId(event.target.value)}>
+                <option value="">Pilih operator</option>
+                {users.filter((user) => ['SUPER_ADMIN', 'KETUA_DPD', 'OPERATOR', 'DPRD_MEMBER'].includes(user.role)).map((user) => (
+                  <option key={user.id} value={user.id}>{user.displayName} - {formatRole(user.role)}</option>
+                ))}
+              </select>
+            </FormField>
+            <FormField label="Catatan assignment">
+              <textarea value={assignmentNote} onChange={(event) => setAssignmentNote(event.target.value)} rows={3} />
+            </FormField>
             <FormField label="Status baru">
               <select value={nextStatus} onChange={(event) => setNextStatus(event.target.value as Exclude<ReportStatus, 'ALL'>)}>
                 {mutableStatuses.map((item) => <option value={item} key={item}>{formatStatus(item)}</option>)}
@@ -901,6 +1007,7 @@ export default function Dashboard() {
             </FormField>
             <div className="drawer-actions">
               <button className="secondary-button" onClick={() => setSelectedReport(null)}>Batal</button>
+              <button className="secondary-button" disabled={saving || !assignedToId} onClick={() => void assignReport()}>Assign</button>
               <button className="primary-button" disabled={saving} onClick={() => void updateReportStatus()}>
                 {saving ? 'Menyimpan...' : 'Simpan Status'}
               </button>
@@ -1003,6 +1110,7 @@ function ReportsPanel({
               <th>Laporan</th>
               <th>Wilayah</th>
               <th>Status</th>
+              <th>Operator/SLA</th>
               <th>Prioritas</th>
               <th>Waktu</th>
               <th>Aksi</th>
@@ -1015,6 +1123,7 @@ function ReportsPanel({
                 <td><b>{item.title}</b><small>{item.category.name} oleh {item.user.displayName}</small></td>
                 <td>{item.district}{item.village ? `, ${item.village}` : ''}</td>
                 <td><Badge label={item.status} /></td>
+                <td>{item.assignedTo?.displayName ?? '-'}<small>{item.dueAt ? formatDate(item.dueAt) : 'SLA belum diset'}</small></td>
                 <td>{item.priority}</td>
                 <td>{formatDate(item.createdAt)}</td>
                 <td><button className="row-action" onClick={() => openStatusPanel(item)}>Update</button></td>

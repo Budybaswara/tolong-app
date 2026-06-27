@@ -94,6 +94,46 @@ export class UpdateReportStatusDto {
   actorId?: string;
 }
 
+export class AssignReportDto {
+  @IsString()
+  assignedToId!: string;
+
+  @IsOptional()
+  @IsString()
+  note?: string;
+
+  @IsOptional()
+  @IsString()
+  dueAt?: string;
+}
+
+export class CreateEmergencyContactDto {
+  @IsString()
+  name!: string;
+
+  @IsString()
+  phone!: string;
+
+  @IsString()
+  category!: string;
+
+  @IsOptional()
+  @IsString()
+  district?: string;
+
+  @IsOptional()
+  @IsString()
+  village?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  active?: boolean;
+
+  @IsOptional()
+  @IsInt()
+  sortOrder?: number;
+}
+
 export class CreateEmergencyDto {
   @IsNumber()
   latitude!: number;

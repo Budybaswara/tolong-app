@@ -2,17 +2,17 @@ import 'package:dio/dio.dart';
 
 class ApiClient {
   ApiClient()
-      : dio = Dio(
-          BaseOptions(
-            baseUrl: const String.fromEnvironment(
-              'API_BASE_URL',
-              defaultValue: 'https://dokploy.closeclaw.site/tolong-api/v1',
-            ),
-            connectTimeout: const Duration(seconds: 15),
-            receiveTimeout: const Duration(seconds: 20),
-            headers: {'Accept': 'application/json'},
+    : dio = Dio(
+        BaseOptions(
+          baseUrl: const String.fromEnvironment(
+            'API_BASE_URL',
+            defaultValue: 'https://dokploy.closeclaw.site/tolong-api/v1',
           ),
-        );
+          connectTimeout: const Duration(seconds: 15),
+          receiveTimeout: const Duration(seconds: 20),
+          headers: {'Accept': 'application/json'},
+        ),
+      );
 
   final Dio dio;
 
@@ -29,13 +29,39 @@ class ApiClient {
     return response.data ?? <dynamic>[];
   }
 
-  Future<Map<String, dynamic>> createReport(Map<String, dynamic> payload) async {
-    final response = await dio.post<Map<String, dynamic>>('/reports', data: payload);
+  Future<Map<String, dynamic>> createReport(
+    Map<String, dynamic> payload,
+  ) async {
+    final response = await dio.post<Map<String, dynamic>>(
+      '/reports',
+      data: payload,
+    );
     return response.data ?? <String, dynamic>{};
   }
 
-  Future<Map<String, dynamic>> createEmergency(Map<String, dynamic> payload) async {
-    final response = await dio.post<Map<String, dynamic>>('/emergencies', data: payload);
+  Future<Map<String, dynamic>> uploadMedia({
+    required String folder,
+    required String path,
+    required String fileName,
+  }) async {
+    final formData = FormData.fromMap({
+      'folder': folder,
+      'file': await MultipartFile.fromFile(path, filename: fileName),
+    });
+    final response = await dio.post<Map<String, dynamic>>(
+      '/storage/upload',
+      data: formData,
+    );
+    return response.data ?? <String, dynamic>{};
+  }
+
+  Future<Map<String, dynamic>> createEmergency(
+    Map<String, dynamic> payload,
+  ) async {
+    final response = await dio.post<Map<String, dynamic>>(
+      '/emergencies',
+      data: payload,
+    );
     return response.data ?? <String, dynamic>{};
   }
 
@@ -45,7 +71,10 @@ class ApiClient {
   }
 
   Future<List<dynamic>> getProducts({String? query}) async {
-    final response = await dio.get<List<dynamic>>('/products', queryParameters: {'q': query});
+    final response = await dio.get<List<dynamic>>(
+      '/products',
+      queryParameters: {'q': query},
+    );
     return response.data ?? <dynamic>[];
   }
 
@@ -55,8 +84,16 @@ class ApiClient {
   }
 
   Future<List<dynamic>> getNews({bool featured = false}) async {
-    final response = await dio.get<List<dynamic>>('/news', queryParameters: {'featured': featured});
+    final response = await dio.get<List<dynamic>>(
+      '/news',
+      queryParameters: {'featured': featured},
+    );
     return response.data ?? <dynamic>[];
+  }
+
+  Future<Map<String, dynamic>> getNewsDetail(String slug) async {
+    final response = await dio.get<Map<String, dynamic>>('/news/$slug');
+    return response.data ?? <String, dynamic>{};
   }
 
   Future<List<dynamic>> getMapReports() async {
@@ -64,8 +101,16 @@ class ApiClient {
     return response.data ?? <dynamic>[];
   }
 
+  Future<List<dynamic>> getEmergencyContacts() async {
+    final response = await dio.get<List<dynamic>>('/emergency-contacts');
+    return response.data ?? <dynamic>[];
+  }
+
   Future<List<dynamic>> getNotifications({String? userId}) async {
-    final response = await dio.get<List<dynamic>>('/notifications', queryParameters: {'userId': userId});
+    final response = await dio.get<List<dynamic>>(
+      '/notifications',
+      queryParameters: {'userId': userId},
+    );
     return response.data ?? <dynamic>[];
   }
 

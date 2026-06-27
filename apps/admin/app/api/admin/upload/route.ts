@@ -1,5 +1,5 @@
 import type { NextRequest } from 'next/server';
-import { apiUrl } from '../_upstream';
+import { apiUrl, upstreamHeaders } from '../_upstream';
 
 export const dynamic = 'force-dynamic';
 
@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     const response = await fetch(apiUrl('storage/upload'), {
       method: 'POST',
       cache: 'no-store',
+      headers: upstreamHeaders(),
       body: formData
     });
     const text = await response.text();

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { AssistanceStatus, JobApplicationStatus, NotificationType, Prisma, ReportStatus } from '@prisma/client';
+import * as admin from 'firebase-admin';
 import { PrismaService } from '../../core/prisma/prisma.service';
 import {
   ApplyAssistanceDto,
@@ -65,7 +66,7 @@ export class CivicService {
   reports(filter: { status?: ReportStatus; district?: string }) {
     return this.prisma.report.findMany({
       where: { status: filter.status, district: filter.district },
-      include: { category: true, media: true, timeline: { orderBy: { createdAt: 'asc' } }, user: true },
+      include: { category: true, media: true, timeline: { orderBy: { createdAt: 'asc' } }, user: true, assignedTo: true },
       orderBy: { createdAt: 'desc' }
     });
   }
@@ -90,7 +91,7 @@ export class CivicService {
         timeline: { create: { status: 'SUBMITTED', note: 'Aspirasi diterima oleh sistem TOLONG' } },
         media: media?.length ? { create: media } : undefined
       },
-      include: { category: true, timeline: true, media: true }
+      include: { category: true, timeline: true, media: true, assignedTo: true }
     });
   }
 
@@ -109,7 +110,7 @@ export class CivicService {
           }
         }
       },
-      include: { category: true, timeline: true, media: true, user: true }
+      include: { category: true, timeline: true, media: true, user: true, assignedTo: true }
     });
   }
 
@@ -122,6 +123,13 @@ export class CivicService {
       where: { status },
       include: { category: true, user: true },
       orderBy: { createdAt: 'desc' }
+    });
+  }
+
+  emergencyContacts() {
+    return this.prisma.emergencyContact.findMany({
+      where: { active: true },
+      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }]
     });
   }
 
@@ -266,14 +274,30 @@ export class CivicService {
     return this.prisma.notification.findMany({ where: { userId }, orderBy: { createdAt: 'desc' }, take: 100 });
   }
 
-  createNotification(body: SendNotificationDto) {
-    return this.prisma.notification.create({
+  async createNotification(body: SendNotificationDto) {
+    const notification = await this.prisma.notification.create({
       data: {
         type: NotificationType.SYSTEM,
         title: body.title,
         body: body.body,
         userId: body.userId
       }
+    });
+    await this.trySendPush(body);
+    return notification;
+  }
+
+  private async trySendPush(body: SendNotificationDto) {
+    if (!admin.apps.length) return;
+    const tokens = await this.prisma.fcmToken.findMany({
+      where: body.userId ? { userId: body.userId } : undefined,
+      select: { token: true }
+    });
+    if (!tokens.length) return;
+    await admin.messaging().sendEachForMulticast({
+      tokens: tokens.map((item) => item.token),
+      notification: { title: body.title, body: body.body },
+      data: { type: NotificationType.SYSTEM }
     });
   }
 

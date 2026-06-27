@@ -55,6 +55,11 @@ export class CivicController {
     return this.civic.emergencies(status);
   }
 
+  @Get('emergency-contacts')
+  emergencyContacts() {
+    return this.civic.emergencyContacts();
+  }
+
   @Post('emergencies')
   emergency(@Body() body: CreateEmergencyDto) {
     return this.civic.createEmergency(body);

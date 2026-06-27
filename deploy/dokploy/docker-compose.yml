@@ -26,6 +26,7 @@ services:
       PORT: 3001
       UPLOAD_DIR: ${UPLOAD_DIR:-/app/uploads}
       PUBLIC_API_BASE_URL: ${PUBLIC_API_BASE_URL:-https://dokploy.closeclaw.site/tolong-api/v1}
+      API_INTERNAL_TOKEN: ${API_INTERNAL_TOKEN:-change-this-internal-api-token}
     depends_on:
       postgres:
         condition: service_healthy
@@ -49,6 +50,8 @@ services:
       PORT: 3000
       API_BASE_URL: ${API_BASE_URL:-http://api:3001/v1}
       NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-https://dokploy.closeclaw.site/tolong-api/v1}
+      API_INTERNAL_TOKEN: ${API_INTERNAL_TOKEN:-change-this-internal-api-token}
+      ADMIN_ACTOR_NAME: ${ADMIN_ACTOR_NAME:-Admin Dashboard}
       ADMIN_ACCESS_CODE: ${ADMIN_ACCESS_CODE:-change-this-admin-login-code}
       ADMIN_SESSION_SECRET: ${ADMIN_SESSION_SECRET:-change-this-admin-session-secret}
     ports:
@@ -57,6 +60,26 @@ services:
       api:
         condition: service_healthy
 
+  postgres-backup:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:-change-this-postgres-password}
+      POSTGRES_DB: ${POSTGRES_DB:-tolong}
+      POSTGRES_USER: ${POSTGRES_USER:-tolong}
+    volumes:
+      - backups_data:/backups
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c 'while true; do
+      pg_dump -h postgres -U "$$POSTGRES_USER" "$$POSTGRES_DB" | gzip > "/backups/tolong-$$(date +%Y%m%d-%H%M%S).sql.gz";
+      find /backups -name "tolong-*.sql.gz" -mtime +14 -delete;
+      sleep 86400;
+      done'
+
 volumes:
   postgres_data:
   uploads_data:
+  backups_data:

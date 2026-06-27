@@ -14,17 +14,21 @@ class EmergencyScreen extends StatefulWidget {
 
 class _EmergencyScreenState extends State<EmergencyScreen> {
   final repository = TolongRepository();
-  late final Future<List<dynamic>> categories = repository.categories(module: 'EMERGENCY');
+  late final Future<List<dynamic>> categories = repository.categories(
+    module: 'EMERGENCY',
+  );
+  late final Future<List<dynamic>> contacts = repository.emergencyContacts();
   String? selectedCategoryId;
   String selectedCategoryName = 'Ambulance';
   bool sending = false;
 
   Future<void> _sendSos() async {
     if (selectedCategoryId == null) {
-      _message('Kategori darurat belum tersedia. Jalankan seed backend atau tambah kategori EMERGENCY.');
+      _message(
+        'Kategori darurat belum tersedia. Tambahkan kategori EMERGENCY dari admin.',
+      );
       return;
     }
-
     setState(() => sending = true);
     try {
       final position = await _position();
@@ -50,7 +54,9 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
     }
-    if (!enabled || permission == LocationPermission.denied || permission == LocationPermission.deniedForever) {
+    if (!enabled ||
+        permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
       return Position(
         longitude: 105.4026,
         latitude: -4.0416,
@@ -64,7 +70,9 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
         speedAccuracy: 0,
       );
     }
-    return Geolocator.getCurrentPosition(locationSettings: const LocationSettings(accuracy: LocationAccuracy.high));
+    return Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+    );
   }
 
   void _message(String text) {
@@ -82,99 +90,184 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
           if (selectedCategoryId == null && items.isNotEmpty) {
             final first = items.first as Map<String, dynamic>;
             selectedCategoryId = first['id']?.toString();
-            selectedCategoryName = first['name']?.toString() ?? selectedCategoryName;
+            selectedCategoryName =
+                first['name']?.toString() ?? selectedCategoryName;
           }
 
-          return ListView(
-            padding: const EdgeInsets.all(20),
+          return AppScrollPage(
             children: [
-              const Text(
-                'Darurat SOS',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Plus Jakarta Sans',
-                  fontSize: 36,
-                  fontWeight: FontWeight.w800,
-                  color: primary,
-                ),
+              const FeatureHeader(
+                eyebrow: 'Emergency',
+                title: 'SOS cepat dengan lokasi GPS',
+                subtitle:
+                    'Tahan tombol merah untuk mengirim permintaan darurat ke operator.',
+                icon: Icons.emergency_share,
               ),
-              const Text('Tahan tombol SOS untuk mengirim lokasi darurat.', textAlign: TextAlign.center),
-              const SizedBox(height: 32),
+              const SizedBox(height: 26),
               Center(
                 child: GestureDetector(
                   onLongPress: sending ? null : _sendSos,
-                  child: Container(
-                    width: 220,
-                    height: 220,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: sending ? Colors.grey : primary,
-                      border: Border.all(color: Colors.white, width: 8),
-                      boxShadow: [BoxShadow(color: primary.withValues(alpha: .35), blurRadius: 40, spreadRadius: 8)],
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.emergency, color: Colors.white, size: 72),
-                        Text(
-                          sending ? 'KIRIM' : 'SOS',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w900,
-                            letterSpacing: 4,
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      _Ring(size: 270, opacity: .08),
+                      _Ring(size: 232, opacity: .15),
+                      Container(
+                        width: 196,
+                        height: 196,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                            colors: sending
+                                ? [Colors.grey, Colors.grey.shade600]
+                                : redGradient,
                           ),
+                          border: Border.all(color: Colors.white, width: 8),
+                          boxShadow: [
+                            BoxShadow(
+                              color: primary.withValues(alpha: .35),
+                              blurRadius: 44,
+                              spreadRadius: 8,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              sending ? Icons.sync : Icons.sos,
+                              color: Colors.white,
+                              size: 66,
+                            ),
+                            Text(
+                              sending ? 'KIRIM' : 'SOS',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 34,
+                                fontWeight: FontWeight.w900,
+                                letterSpacing: 4,
+                              ),
+                            ),
+                            const Text(
+                              'tahan tombol',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
-              if (snapshot.connectionState == ConnectionState.waiting) const LinearProgressIndicator(),
-              GridView.count(
-                crossAxisCount: 2,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                mainAxisSpacing: 12,
-                crossAxisSpacing: 12,
-                children: items.map((raw) {
-                  final item = raw as Map<String, dynamic>;
-                  final id = item['id']?.toString();
-                  final name = item['name']?.toString() ?? 'Darurat';
-                  final active = id == selectedCategoryId;
-                  return InkWell(
-                    onTap: () => setState(() {
-                      selectedCategoryId = id;
-                      selectedCategoryName = name;
-                    }),
-                    borderRadius: BorderRadius.circular(16),
-                    child: GlassCard(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.local_hospital, color: active ? primary : onSurface),
-                          const SizedBox(height: 8),
-                          Text(name, style: TextStyle(fontWeight: FontWeight.w700, color: active ? primary : onSurface)),
-                        ],
-                      ),
-                    ),
-                  );
-                }).toList(),
-              ),
-              if (items.isEmpty && snapshot.connectionState != ConnectionState.waiting)
-                const GlassCard(child: Text('Kategori darurat akan tampil setelah admin menambahkan data.')),
-              const SizedBox(height: 16),
-              const GlassCard(
-                child: ListTile(
-                  leading: Icon(Icons.location_on, color: primary),
-                  title: Text('Lokasi Anda Sekarang'),
-                  subtitle: Text('GPS perangkat akan dikirim saat SOS. Jika GPS mati, aplikasi memakai titik fallback Mesuji.'),
+              const SizedBox(height: 22),
+              SectionTitle(
+                'Kategori Darurat',
+                action: StatusPill(
+                  label: selectedCategoryName,
+                  icon: Icons.check_circle,
                 ),
+              ),
+              const SizedBox(height: 12),
+              if (snapshot.connectionState == ConnectionState.waiting)
+                const LinearProgressIndicator(),
+              if (items.isEmpty &&
+                  snapshot.connectionState != ConnectionState.waiting)
+                const EmptyStateCard(
+                  icon: Icons.category,
+                  title: 'Kategori belum tersedia',
+                  body: 'Tambahkan kategori darurat dari dashboard admin.',
+                )
+              else
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  childAspectRatio: 1.45,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 12,
+                  children: items.map((raw) {
+                    final item = raw as Map<String, dynamic>;
+                    final id = item['id']?.toString();
+                    final name = item['name']?.toString() ?? 'Darurat';
+                    final active = id == selectedCategoryId;
+                    return FeatureTile(
+                      icon: name.toLowerCase().contains('pemadam')
+                          ? Icons.local_fire_department
+                          : Icons.local_hospital,
+                      title: name,
+                      subtitle: active ? 'Kategori dipilih' : 'Tap untuk pilih',
+                      color: active ? primary : tertiary,
+                      badge: active ? 'Aktif' : null,
+                      onTap: () => setState(() {
+                        selectedCategoryId = id;
+                        selectedCategoryName = name;
+                      }),
+                    );
+                  }).toList(),
+                ),
+              const SizedBox(height: 16),
+              const InfoRowCard(
+                icon: Icons.location_on,
+                title: 'Lokasi otomatis',
+                subtitle:
+                    'GPS perangkat dikirim saat SOS. Jika GPS mati, aplikasi memakai titik fallback Mesuji.',
+                color: tertiary,
+              ),
+              const SizedBox(height: 16),
+              const SectionTitle('Kontak Darurat Resmi'),
+              const SizedBox(height: 12),
+              FutureBuilder<List<dynamic>>(
+                future: contacts,
+                builder: (context, contactSnapshot) {
+                  final contactItems = contactSnapshot.data ?? <dynamic>[];
+                  if (contactSnapshot.connectionState == ConnectionState.waiting) {
+                    return const LinearProgressIndicator();
+                  }
+                  if (contactItems.isEmpty) {
+                    return const EmptyStateCard(
+                      icon: Icons.phone,
+                      title: 'Kontak belum tersedia',
+                      body: 'Admin dapat menambahkan kontak darurat dari Security Center.',
+                    );
+                  }
+                  return Column(
+                    children: contactItems.take(5).map((raw) {
+                      final item = raw as Map<String, dynamic>;
+                      return InfoRowCard(
+                        icon: Icons.phone_in_talk,
+                        title: item['name']?.toString() ?? 'Kontak SOS',
+                        subtitle: '${item['category'] ?? 'Darurat'} - ${item['phone'] ?? '-'}',
+                        color: primary,
+                      );
+                    }).toList(),
+                  );
+                },
               ),
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+class _Ring extends StatelessWidget {
+  const _Ring({required this.size, required this.opacity});
+
+  final double size;
+  final double opacity;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: primary.withValues(alpha: opacity),
       ),
     );
   }
