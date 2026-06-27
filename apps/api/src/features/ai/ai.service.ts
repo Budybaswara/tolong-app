@@ -9,6 +9,8 @@ type ChatInput = { message: string; conversationId?: string; userId?: string };
 @Injectable()
 export class AiService {
   private openai?: OpenAI;
+  private readonly openaiApiKey?: string;
+  private readonly openaiBaseUrl?: string;
 
   constructor(
     private config: ConfigService,
@@ -16,6 +18,8 @@ export class AiService {
   ) {
     const key = config.get<string>('OPENAI_API_KEY');
     const baseURL = config.get<string>('OPENAI_BASE_URL');
+    this.openaiApiKey = key;
+    this.openaiBaseUrl = baseURL;
     if (key) this.openai = new OpenAI({ apiKey: key, ...(baseURL ? { baseURL } : {}) });
   }
 
@@ -79,12 +83,38 @@ export class AiService {
         })
       )
     ];
+    if (this.openaiBaseUrl?.includes('openrouter.ai')) {
+      return this.askOpenRouter(chatMessages);
+    }
     const response = await this.openai.chat.completions.create({
       model: this.config.get('OPENAI_MODEL', 'gpt-5.5'),
       max_tokens: Number(this.config.get('OPENAI_MAX_TOKENS', 512)),
       messages: chatMessages
     });
     return response.choices[0]?.message?.content ?? 'Tidak ada jawaban AI.';
+  }
+
+  private async askOpenRouter(messages: ChatCompletionMessageParam[]) {
+    if (!this.openaiApiKey || !this.openaiBaseUrl) {
+      throw new ServiceUnavailableException('OpenAI belum dikonfigurasi');
+    }
+    const response = await fetch(`${this.openaiBaseUrl.replace(/\/$/, '')}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${this.openaiApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: this.config.get('OPENAI_MODEL', 'openai/gpt-5.5'),
+        max_tokens: Number(this.config.get('OPENAI_MAX_TOKENS', 512)),
+        messages
+      })
+    });
+    if (!response.ok) throw new ServiceUnavailableException('OpenRouter gagal');
+    const json = (await response.json()) as {
+      choices?: Array<{ message?: { content?: string } }>;
+    };
+    return json.choices?.[0]?.message?.content ?? 'Tidak ada jawaban AI.';
   }
 
   private async askGemini(message: string, model: string) {
