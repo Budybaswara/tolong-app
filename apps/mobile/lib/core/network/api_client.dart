@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 
+import '../auth/auth_session.dart';
+
 class ApiClient {
   ApiClient()
     : dio = Dio(
@@ -12,9 +14,44 @@ class ApiClient {
           receiveTimeout: const Duration(seconds: 20),
           headers: {'Accept': 'application/json'},
         ),
-      );
+      ) {
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) {
+          final token = AuthSession.instance.accessToken;
+          if (token != null && token.isNotEmpty) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+          handler.next(options);
+        },
+      ),
+    );
+  }
 
   final Dio dio;
+
+  Future<Map<String, dynamic>> loginWithFirebaseToken(String idToken) async {
+    final response = await dio.post<Map<String, dynamic>>(
+      '/auth/firebase',
+      data: {'idToken': idToken},
+    );
+    return response.data ?? <String, dynamic>{};
+  }
+
+  Future<Map<String, dynamic>> guestLogin({String? displayName}) async {
+    final response = await dio.post<Map<String, dynamic>>(
+      '/auth/guest',
+      data: {'displayName': displayName ?? 'Tamu TOLONG'},
+    );
+    return response.data ?? <String, dynamic>{};
+  }
+
+  Future<void> registerFcmToken(String token) async {
+    await dio.post<Map<String, dynamic>>(
+      '/auth/fcm-token',
+      data: {'token': token, 'platform': 'android'},
+    );
+  }
 
   Future<Map<String, dynamic>> getHome() async {
     final response = await dio.get<Map<String, dynamic>>('/home');

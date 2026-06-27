@@ -1,6 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'core/auth/auth_session.dart';
 import 'features/ai/ai_screen.dart';
 import 'features/aspirasi/aspirasi_screen.dart';
 import 'features/assistance/assistance_screen.dart';
@@ -14,7 +17,18 @@ import 'features/news/profile_news_screen.dart';
 import 'features/notifications/notifications_screen.dart';
 import 'theme.dart';
 
-void main() => runApp(const TolongApp());
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AuthSession.instance.load();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  runApp(const TolongApp());
+}
 
 final router = GoRouter(
   initialLocation: '/',

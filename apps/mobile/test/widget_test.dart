@@ -11,7 +11,7 @@ void main() {
       find.text('Aplikasi layanan publik DPD PSI Mesuji Lampung'),
       findsOneWidget,
     );
-    await tester.drag(find.byType(Scrollable), const Offset(0, -360));
+    await tester.drag(find.byType(Scrollable).first, const Offset(0, -360));
     await tester.pumpAndSettle();
     expect(find.text('Lanjut sebagai Tamu'), findsOneWidget);
   });

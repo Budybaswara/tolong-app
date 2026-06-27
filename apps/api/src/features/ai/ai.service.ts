@@ -14,7 +14,8 @@ export class AiService {
     private prisma: PrismaService
   ) {
     const key = config.get<string>('OPENAI_API_KEY');
-    if (key) this.openai = new OpenAI({ apiKey: key });
+    const baseURL = config.get<string>('OPENAI_BASE_URL');
+    if (key) this.openai = new OpenAI({ apiKey: key, ...(baseURL ? { baseURL } : {}) });
   }
 
   async chat(input: ChatInput) {

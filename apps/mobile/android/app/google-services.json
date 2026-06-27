@@ -1,0 +1,47 @@
+﻿{
+  "project_info": {
+    "project_number": "993931511205",
+    "project_id": "tolong-mesuji-production",
+    "storage_bucket": "tolong-mesuji-production.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993931511205:android:df0ee510895c604c1a544c",
+        "android_client_info": {
+          "package_name": "id.psi.mesuji.tolong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993931511205-io73io8qrj3tnha3hu3opbh6saqkgvsj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.psi.mesuji.tolong",
+            "certificate_hash": "dc40391e2f12927e2d4ba2d1e03fda90a8eba528"
+          }
+        },
+        {
+          "client_id": "993931511205-afu529jh5kfiat5mpv069fd4l2ibnj1v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGBoZitkKInGkDx6WmQzDEIOSir9KVnqg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "993931511205-afu529jh5kfiat5mpv069fd4l2ibnj1v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,6 +5,11 @@ class TolongRepository {
 
   final ApiClient api;
 
+  Future<Map<String, dynamic>> loginWithFirebaseToken(String idToken) =>
+      api.loginWithFirebaseToken(idToken);
+  Future<Map<String, dynamic>> guestLogin({String? displayName}) =>
+      api.guestLogin(displayName: displayName);
+  Future<void> registerFcmToken(String token) => api.registerFcmToken(token);
   Future<Map<String, dynamic>> home() => api.getHome();
   Future<List<dynamic>> categories({String? module}) =>
       api.getCategories(module: module);
